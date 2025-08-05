@@ -94,7 +94,7 @@ export class GameClient {
     config: {
       totalRounds: 10,
       roundDurationSeconds: 30,
-      randomStartTime: true,
+      randomStartTime: false,
       musicCategory: "mixed",
     },
   };

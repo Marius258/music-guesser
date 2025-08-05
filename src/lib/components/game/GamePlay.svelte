@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { GameState } from '$lib/game-client.js';
 	import { spotifyWebPlayback } from '$lib/spotify-playback.js';
+	import { untrack } from 'svelte';
 	import RoundResults from './RoundResults.svelte';
 	import GameQuestion from './GameQuestion.svelte';
 	import ScoresSidebar from './ScoresSidebar.svelte';
@@ -24,11 +25,37 @@
 	// Create a derived sorted players array to avoid mutating the original
 	let sortedPlayers = $derived([...gameState.players].sort((a, b) => b.score - a.score));
 
+	// Track question changes manually to avoid timer-related reactivity
+	let previousQuestionData = $state<{question: any, round: number, host: boolean} | null>(null);
+
 	// Reset state when round changes and handle Spotify playback
 	$effect(() => {
-		if (gameState.currentQuestion) {
+		const currentQuestion = gameState.currentQuestion;
+		const currentRound = gameState.currentRound;
+		const isHost = gameState.isHost;
+		
+		if (currentQuestion) {
+			// Check if this is actually a new question by comparing all relevant data
+			const currentQuestionData = {
+				question: currentQuestion,
+				round: currentRound,
+				host: isHost
+			};
+			
+			// Only proceed if this is genuinely a new question
+			if (previousQuestionData && 
+				previousQuestionData.question?.spotifyUri === currentQuestion.spotifyUri &&
+				previousQuestionData.round === currentRound &&
+				previousQuestionData.host === isHost) {
+				// Same question, skip processing
+				return;
+			}
+			
+			// Update tracking data
+			previousQuestionData = currentQuestionData;
+			
 			// Create a unique ID for the current question to prevent duplicate plays
-			const questionId = `${gameState.currentRound}-${gameState.currentQuestion.spotifyUri}`;
+			const questionId = `${currentRound}-${currentQuestion.spotifyUri}`;
 			
 			// Only proceed if this is a new question
 			if (questionId === lastPlayedQuestionId) {
@@ -43,12 +70,12 @@
 			playbackError = null;
 			
 			// Only hosts can play music using Spotify Web Playback SDK
-			if (gameState.isHost && gameState.currentQuestion.spotifyUri && spotifyWebPlayback.isPlayerReady()) {
+			if (isHost && currentQuestion.spotifyUri && spotifyWebPlayback.isPlayerReady()) {
 				playSpotifyTrack();
-			} else if (gameState.isHost && gameState.currentQuestion.spotifyUri) {
+			} else if (isHost && currentQuestion.spotifyUri) {
 				// Host but Spotify not ready
 				playbackError = "Spotify Web Playback not ready. Please check your connection.";
-			} else if (!gameState.isHost) {
+			} else if (!isHost) {
 				// Non-host - no audio controls needed
 				console.log('Non-host: Waiting for host to play music');
 			} else {

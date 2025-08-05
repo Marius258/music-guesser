@@ -45,9 +45,9 @@
 
 <style>
 	.scores-sidebar {
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 		padding: 1.5rem;
 		height: fit-content;
 		max-height: 500px;
@@ -71,7 +71,7 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 0.75rem;
-		background: rgba(255, 255, 255, 0.03);
+		background: var(--card-bg-tertiary);
 		border-radius: var(--border-radius);
 		border: 1px solid transparent;
 		transition: var(--transition);

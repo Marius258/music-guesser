@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { GameState, GameConfig } from '$lib/game-client.js';
-	import GameConfigForm from '../forms/GameConfigForm.svelte';
+		import { GameConfigForm } from '../forms/index.js';
+	import { Loading } from '../common/index.js';
 	import { onMount } from 'svelte';
 
 	interface SpotifyGenre {
@@ -134,14 +135,7 @@
 				<p class="min-players">Minimum 1 player required to start</p>
 			</div>
 		{:else}
-			<div class="waiting">
-				<p>Waiting for host to start the game...</p>
-				<div class="loading-dots">
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-			</div>
+			<Loading type="dots" text="Waiting for host to start the game..." />
 		{/if}
 	</div>
 </div>
@@ -170,11 +164,11 @@
 	.game-id,
 	.players-list,
 	.current-settings {
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
 		padding: 1rem;
 		margin-bottom: 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 	}
 
 	.id-container {
@@ -222,7 +216,7 @@
 		background: var(--secondary-color);
 		padding: 0.75rem;
 		border-radius: 0.25rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 	}
 
 	.player-name {
@@ -297,37 +291,5 @@
 		margin: 0;
 	}
 
-	.waiting {
-		margin-top: 2rem;
-		color: rgba(255, 255, 255, 0.8);
-	}
 
-	.loading-dots {
-		display: flex;
-		justify-content: center;
-		gap: 0.25rem;
-		margin-top: 1rem;
-	}
-
-	.loading-dots span {
-		width: 8px;
-		height: 8px;
-		background: rgba(255, 255, 255, 0.6);
-		border-radius: 50%;
-		animation: loading 1.4s infinite ease-in-out;
-	}
-
-	.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-	.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-	@keyframes loading {
-		0%, 80%, 100% {
-			transform: scale(0);
-			opacity: 0.5;
-		}
-		40% {
-			transform: scale(1);
-			opacity: 1;
-		}
-	}
 </style>

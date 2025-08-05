@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { GameConfig } from '$lib/game-client.js';
 	import { onMount } from 'svelte';
+	import { Loading } from '../common/index.js';
 
 	interface SpotifyGenre {
 		id: string;
@@ -123,10 +124,7 @@
 		<div class="form-group">
 			<span>Music Genre</span>
 			{#if genresLoading}
-				<div class="loading-genres">
-					<div class="loading-spinner"></div>
-					Loading genres...
-				</div>
+				<Loading text="Loading music genres..." size="small" />
 			{:else}
 				<div class="genres-grid">
 					{#each availableGenres as genre (genre.id)}
@@ -256,33 +254,7 @@
 		cursor: pointer;
 	}
 
-	.loading-genres {
-		padding: 2rem;
-		border: 2px solid var(--border-color);
-		border-radius: 8px;
-		background: var(--input-bg);
-		color: var(--text-secondary);
-		font-style: italic;
-		text-align: center;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.75rem;
-	}
 
-	.loading-spinner {
-		width: 20px;
-		height: 20px;
-		border: 2px solid var(--border-color);
-		border-top: 2px solid var(--primary-color);
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-	}
-
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
 
 	.genres-grid {
 		display: grid;

@@ -2,6 +2,7 @@
 	import type { RoundResult } from '$lib/game-client.js';
 	import SongInfo from './SongInfo.svelte';
 	import type { TrackInfo } from '$lib/game-client.js';
+	import { formatAnswerTime } from '$lib/utils.js';
 
 	interface Props {
 		roundResults: RoundResult[];
@@ -12,21 +13,15 @@
 
 	let { roundResults, roundNumber, playerId, track }: Props = $props();
 
-	// Function to format answer time
-	function formatAnswerTime(time: number): string {
-		if (time < 1) {
-			return `${Math.round(time * 10) / 10}s`;
-		}
-		return `${Math.round(time * 10) / 10}s`;
-	}
+
 
 	// Get fastest correct answers for leaderboard
-	let fastestCorrectAnswers = $derived(() => {
-		return roundResults
+	let fastestCorrectAnswers = $derived(
+		roundResults
 			.filter(result => result.correct && result.answerTime)
 			.sort((a, b) => (a.answerTime || 0) - (b.answerTime || 0))
-			.slice(0, 3); // Show top 3 fastest
-	});
+			.slice(0, 3) // Show top 3 fastest
+	);
 </script>
 
 <div class="round-results">
@@ -93,9 +88,9 @@
 <style>
 	.round-results {
 		padding: 2rem;
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 		margin-bottom: 2rem;
 	}
 
@@ -117,7 +112,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 1rem;
-		background: rgba(255, 255, 255, 0.03);
+		background: var(--card-bg-tertiary);
 		border-radius: var(--border-radius);
 		border-left: 4px solid transparent;
 	}
@@ -213,7 +208,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.5rem;
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: 0.25rem;
 	}
 

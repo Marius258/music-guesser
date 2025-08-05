@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { GameState } from '$lib/game-client.js';
+	import { getMedalEmoji, getPlayerPosition, getPositionClass } from '$lib/utils.js';
 
 	interface Props {
 		gameState: GameState;
@@ -19,28 +20,7 @@
 		}
 	});
 
-	function getPlayerPosition(playerId: string): number {
-		if (!gameState.scores) return -1;
-		return gameState.scores.findIndex(score => score.id === playerId) + 1;
-	}
 
-	function getMedalEmoji(position: number): string {
-		switch (position) {
-			case 1: return '🥇';
-			case 2: return '🥈';
-			case 3: return '🥉';
-			default: return '🏅';
-		}
-	}
-
-	function getPositionClass(index: number): string {
-		switch (index) {
-			case 0: return 'first';
-			case 1: return 'second';
-			case 2: return 'third';
-			default: return '';
-		}
-	}
 </script>
 
 <div class="card results-card">
@@ -130,12 +110,12 @@
 					<div class="stats">
 						<div class="stat">
 							<span class="stat-label">Final Position:</span>
-							<span class="stat-value">#{getPlayerPosition(gameState.playerId)}</span>
+							<span class="stat-value">#{getPlayerPosition(gameState.scores || [], gameState.playerId)}</span>
 						</div>
 						<div class="stat">
 							<span class="stat-label">Total Score:</span>
 							<span class="stat-value">
-								{gameState.scores.find(s => s.id === gameState.playerId)?.score || 0} pts
+								{gameState.scores.find((s: any) => s.id === gameState.playerId)?.score || 0} pts
 							</span>
 						</div>
 						<div class="stat">
@@ -277,11 +257,11 @@
 	.full-results,
 	.summary-card,
 	.correct-song {
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
 		padding: 1.5rem;
 		margin-bottom: 2rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 	}
 
 	.full-results h3,
@@ -301,9 +281,9 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 0.75rem;
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: 0.25rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 	}
 
 	.result-item.you {

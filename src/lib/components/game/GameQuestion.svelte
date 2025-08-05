@@ -158,7 +158,7 @@
 	}
 
 	.audio-player {
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
 		padding: 1.5rem;
 		margin-bottom: 2rem;

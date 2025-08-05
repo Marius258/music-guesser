@@ -1,36 +1,7 @@
 import { WebSocketServer, WebSocket } from "ws";
 import type { IncomingMessage } from "http";
 import { spotifyService, type SpotifyTrack } from "./spotify.js";
-
-// Generate a simple game ID: 3 letters + 3 numbers (e.g., ABC123)
-function generateGameId(): string {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const numbers = "0123456789";
-
-  let result = "";
-
-  // Generate 3 random letters
-  for (let i = 0; i < 3; i++) {
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-
-  // Generate 3 random numbers
-  for (let i = 0; i < 3; i++) {
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-  }
-
-  return result;
-}
-
-// Generate a simple player ID: random alphanumeric string
-function generatePlayerId(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < 12; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+import { generateGameId, generatePlayerId, calculatePoints } from "./game-utils.js";
 
 export interface Player {
   id: string;
@@ -301,8 +272,7 @@ class GameManager {
     if (isCorrect) {
       // Award points based on speed (faster = more points)
       const timeElapsed = Date.now() - game.roundStartTime;
-      const speedBonus = Math.max(0, (game.roundDuration - timeElapsed) / 1000);
-      pointsGained = Math.round(100 + speedBonus * 2);
+      pointsGained = calculatePoints(isCorrect, timeElapsed, game.roundDuration);
       player.score += pointsGained;
     }
 

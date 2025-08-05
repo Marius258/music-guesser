@@ -29,9 +29,9 @@
 	.correct-song {
 		margin-bottom: 2rem;
 		padding: 1.5rem;
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--card-bg-secondary);
 		border-radius: var(--border-radius);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: var(--border-subtle);
 	}
 
 	.correct-song h3 {

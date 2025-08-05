@@ -5,6 +5,8 @@
 	import GameQuestion from './GameQuestion.svelte';
 	import ScoresSidebar from './ScoresSidebar.svelte';
 	import GameTimer from '../common/GameTimer.svelte';
+	import { formatTime } from '$lib/utils.js';
+	import { Loading } from '../common/index.js';
 
 	interface Props {
 		gameState: GameState;
@@ -104,10 +106,7 @@
 		onsubmitanswer(answer);
 	}
 
-	function formatTime(seconds: number | undefined): string {
-		if (seconds === undefined) return '--';
-		return seconds.toString().padStart(2, '0');
-	}
+
 
 	function toggleSpotifyPlayback() {
 		if (!gameState.isHost || !spotifyWebPlayback.isPlayerReady()) return;
@@ -182,10 +181,7 @@
 				{spotifyWebPlayback}
 			/>
 		{:else}
-			<div class="waiting-round">
-				<div class="loading-spinner"></div>
-				<p>Preparing next round...</p>
-			</div>
+			<Loading text="Preparing next round..." />
 		{/if}
 
 		<ScoresSidebar 
@@ -239,14 +235,7 @@
 		transition: width 0.3s ease;
 	}
 
-	.waiting-round {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		min-height: 200px;
-		gap: 1rem;
-	}
+
 
 	@media (max-width: 768px) {
 		.game-play {

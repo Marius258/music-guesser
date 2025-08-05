@@ -17,8 +17,12 @@
   --text-accent: #ffd700;
 
   --card-bg: rgba(255, 255, 255, 0.1);
+  --card-bg-secondary: rgba(255, 255, 255, 0.05);
+  --card-bg-tertiary: rgba(255, 255, 255, 0.03);
   --input-bg: rgba(255, 255, 255, 0.1);
   --border-color: rgba(255, 255, 255, 0.2);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.1);
+  --border-standard: 1px solid rgba(255, 255, 255, 0.2);
 
   --border-radius: 0.5rem;
   --border-radius-large: 1rem;

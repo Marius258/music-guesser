@@ -2,43 +2,46 @@
 
 /* CSS Custom Properties */
 :root {
-  --primary-color: #4caf50;
-  --primary-color-rgb: 76, 175, 80;
-  --secondary-color: rgba(255, 255, 255, 0.1);
-  --secondary-hover: rgba(255, 255, 255, 0.2);
-  --accent-color: #ffd700;
-  --success-color: #4caf50;
-  --error-color: #f44336;
-  --warning-color: #ffd700;
-  --spotify-color: #1ed760;
+  /* Primary Theme Colors */
+  --primary-color: #4a9eff;
+  --primary-color-rgb: 74, 158, 255;
 
-  --text-primary: #ffffff;
-  --text-secondary: #bbbbbb;
-  --text-accent: #ffd700;
+  --secondary-color: rgba(255, 255, 255, 0.08);
+  --secondary-hover: rgba(255, 255, 255, 0.15);
+  --accent-color: #ffd23f;
 
-  --card-bg: rgba(255, 255, 255, 0.1);
+  --success-color: #4ade80;
+  --error-color: #f87171;
+  --warning-color: #fbbf24;
+  --spotify-color: #1db954;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-accent: #ffd23f;
+
+  /* Backgrounds */
+  --card-bg: rgba(255, 255, 255, 0.08);
   --card-bg-secondary: rgba(255, 255, 255, 0.05);
   --card-bg-tertiary: rgba(255, 255, 255, 0.03);
   --input-bg: rgba(255, 255, 255, 0.1);
+
+  /* Borders */
   --border-color: rgba(255, 255, 255, 0.2);
   --border-subtle: 1px solid rgba(255, 255, 255, 0.1);
   --border-standard: 1px solid rgba(255, 255, 255, 0.2);
 
+  /* Other Styles */
   --border-radius: 0.5rem;
   --border-radius-large: 1rem;
   --transition: all 0.2s ease;
-}
-
-/* Reset and Base Styles */
-* {
-  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   min-height: 100vh;
   color: var(--text-primary);
 }

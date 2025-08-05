@@ -57,6 +57,17 @@ export class SpotifyWebPlayback {
       return;
     }
 
+    console.log("🎵 Initializing Spotify Web Playback SDK...");
+    console.log("Current domain:", window.location.hostname);
+    console.log("Current origin:", window.location.origin);
+
+    // Check if current domain might cause issues
+    if (/^\d+\.\d+\.\d+\.\d+$/.test(window.location.hostname)) {
+      console.warn("⚠️  Warning: Using IP address instead of domain name.");
+      console.warn("Spotify Web Playback SDK may have restrictions on IP addresses.");
+      console.warn("If music doesn't play, try accessing via localhost or adding a local domain.");
+    }
+
     this.accessToken = accessToken;
 
     // Load Spotify Web Playback SDK
@@ -75,15 +86,19 @@ export class SpotifyWebPlayback {
 
     // Error handling
     this.player.addListener("initialization_error", ({ message }) => {
-      console.error("Failed to initialize Spotify player:", message);
+      console.error("❌ Spotify initialization error:", message);
+      console.error("Current domain:", window.location.hostname);
+      console.error("Is IP address:", /^\d+\.\d+\.\d+\.\d+$/.test(window.location.hostname));
     });
 
     this.player.addListener("authentication_error", ({ message }) => {
-      console.error("Failed to authenticate with Spotify:", message);
+      console.error("❌ Spotify authentication error:", message);
+      console.error("Current domain:", window.location.hostname);
     });
 
     this.player.addListener("account_error", ({ message }) => {
-      console.error("Failed to validate Spotify account:", message);
+      console.error("❌ Spotify account error:", message);
+      console.error("Make sure you have Spotify Premium");
     });
 
     this.player.addListener("playback_error", ({ message }) => {

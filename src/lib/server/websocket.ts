@@ -591,7 +591,10 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function createWebSocketServer() {
-  const wss = new WebSocketServer({ port: 8080 });
+  const wss = new WebSocketServer({
+    port: 8080,
+    host: "0.0.0.0", // Allow connections from any IP
+  });
 
   wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
     let playerId: string;

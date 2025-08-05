@@ -152,7 +152,9 @@ export class GameClient {
       this.connectionState = "connecting";
       this.error = null;
       try {
-        this.ws = new WebSocket("ws://localhost:8080");
+        // Use the current host but connect to WebSocket on port 8080
+        const wsHost = typeof window !== "undefined" ? window.location.hostname : "localhost";
+        this.ws = new WebSocket(`ws://${wsHost}:8080`);
 
         this.ws.onopen = () => {
           this.connectionState = "connected";

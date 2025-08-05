@@ -1,18 +1,6 @@
 <script lang="ts">
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/stores';
-	
-	function handleJoinSubmit() {
-		if (!playerName.trim() || !gameId.trim()) return;
-		
-		// Validate game ID format
-		if (!isValidGameId(gameId.trim())) {
-			alert('Please enter a valid Game ID (3 letters + 3 numbers, e.g., ABC123)');
-			return;
-		}
-		
-		onjoingame(gameId.trim(), playerName.trim());
-	}
 
 	// Auto-uppercase game ID as user types and validate format
 	function handleGameIdInput(event: Event) {
@@ -85,6 +73,13 @@
 
 	function handleJoinGame() {
 		if (!playerName.trim() || !gameId.trim()) return;
+		
+		// Validate game ID format
+		if (!isValidGameId(gameId.trim())) {
+			alert('Please enter a valid Game ID (3 letters + 3 numbers, e.g., ABC123)');
+			return;
+		}
+		
 		onjoingame(gameId.trim(), playerName.trim());
 	}
 
@@ -224,138 +219,3 @@
 		{/if}
 	</div>
 </div>
-
-<style>
-	.welcome {
-		text-align: center;
-	}
-
-	h2 {
-		margin-bottom: 1rem;
-		font-size: 1.8rem;
-	}
-
-	h3 {
-		margin: 1.5rem 0 1rem 0;
-		font-size: 1.3rem;
-	}
-
-	p {
-		margin-bottom: 1.5rem;
-		opacity: 0.9;
-		line-height: 1.5;
-	}
-
-	.connect-section {
-		margin-top: 2rem;
-	}
-
-	.menu {
-		margin-top: 2rem;
-	}
-
-	.form {
-		margin-top: 1rem;
-		text-align: left;
-	}
-
-	.form-group {
-		margin-bottom: 1rem;
-	}
-
-	label {
-		display: block;
-		margin-bottom: 0.5rem;
-		font-weight: 500;
-	}
-
-	.buttons {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		margin-top: 1.5rem;
-		flex-wrap: wrap;
-	}
-
-	.error {
-		color: #f44336;
-		margin-top: 1rem;
-		font-size: 0.9rem;
-	}
-
-	.spotify-auth {
-		margin-top: 2rem;
-	}
-
-	.btn-spotify {
-		background-color: #1db954;
-		color: white;
-	}
-
-	.btn-spotify:hover {
-		background-color: #1ed760;
-	}
-
-	.success {
-		color: #4caf50;
-		margin-top: 1rem;
-		font-size: 0.9rem;
-	}
-
-	.spotify-section {
-		margin-top: 2rem;
-		padding: 1.5rem;
-		background: rgba(30, 215, 96, 0.1);
-		border: 1px solid rgba(30, 215, 96, 0.3);
-		border-radius: 0.5rem;
-		text-align: center;
-	}
-
-	.spotify-section h4 {
-		margin: 0 0 0.5rem 0;
-		color: #1ed760;
-		font-size: 1.1rem;
-	}
-
-	.spotify-section p {
-		margin: 0.5rem 0 1rem 0;
-		font-size: 0.9rem;
-	}
-
-	.spotify-btn {
-		background: rgba(30, 215, 96, 0.8) !important;
-		border-color: rgba(30, 215, 96, 1) !important;
-		color: white !important;
-	}
-
-	.spotify-btn:hover {
-		background: rgba(30, 215, 96, 0.9) !important;
-	}
-
-	.spotify-section small {
-		display: block;
-		margin-top: 0.5rem;
-		opacity: 0.7;
-		font-size: 0.8rem;
-	}
-
-	.spotify-success {
-		background: rgba(76, 175, 80, 0.2);
-		border: 1px solid rgba(76, 175, 80, 0.5);
-		border-radius: 0.5rem;
-		padding: 1rem;
-		margin-bottom: 1rem;
-		color: #4caf50;
-		font-weight: 500;
-	}
-
-	@media (max-width: 600px) {
-		.buttons {
-			flex-direction: column;
-		}
-		
-		.btn {
-			width: 100%;
-		}
-	}
-</style>

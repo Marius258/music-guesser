@@ -24,15 +24,11 @@ src/lib/components/
 │
 ├── forms/                      # Form components
 │   ├── index.ts
-│   ├── CreateGameForm.svelte  # Host game creation form
-│   ├── JoinGameForm.svelte    # Join existing game form
 │   └── GameConfigForm.svelte  # Game configuration settings
 │
 └── common/                     # Shared/utility components
     ├── index.ts
     ├── ConnectionStatus.svelte # WebSocket connection status
-    ├── ConnectPrompt.svelte   # Connection prompts
-    ├── GameModeMenu.svelte    # Game mode selection
     └── GameTimer.svelte       # Countdown timer with warning states
 ```
 
@@ -48,7 +44,7 @@ import { WelcomeScreen, GamePlay, ConnectionStatus } from "$lib/components";
 
 ```typescript
 import { GamePlay, GameQuestion } from "$lib/components/game";
-import { CreateGameForm } from "$lib/components/forms";
+import { GameConfigForm } from "$lib/components/forms";
 ```
 
 ### Direct imports (when needed)
@@ -75,13 +71,13 @@ import GameTimer from "$lib/components/common/GameTimer.svelte";
 
 - **Purpose**: User input and data collection
 - **Characteristics**: Form validation, user interaction, data submission
-- **Examples**: Login forms, game creation, settings
+- **Examples**: Game configuration, settings
 
 ### Common (`/common/`)
 
 - **Purpose**: Reusable utility components
 - **Characteristics**: No business logic, pure UI components, widely reusable
-- **Examples**: Timers, status indicators, connection prompts
+- **Examples**: Timers, status indicators
 
 ## Adding New Components
 

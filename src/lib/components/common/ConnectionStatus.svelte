@@ -37,11 +37,11 @@
 	}
 
 	.connected {
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.error {
-		color: #f44336;
+		color: var(--error-color);
 	}
 
 	.disconnected {

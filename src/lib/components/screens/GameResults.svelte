@@ -44,7 +44,7 @@
 </script>
 
 <div class="card results-card">
-	<div class="game-results">
+	<div class="game-results text-center">
 		<div class="results-header">
 			<h2>🎉 Game Complete! 🎉</h2>
 			<p>Here are the final results:</p>
@@ -170,14 +170,10 @@
 		width: 100%;
 	}
 
-	.game-results {
-		text-align: center;
-	}
-
 	.results-header h2 {
 		margin: 0 0 1rem 0;
 		font-size: 2rem;
-		background: linear-gradient(45deg, #ffd700, #ffed4a);
+		background: linear-gradient(45deg, var(--accent-color), #ffed4a);
 		background-clip: text;
 		-webkit-background-clip: text;
 		color: transparent;
@@ -216,24 +212,16 @@
 		transform: translateY(0);
 	}
 
-	.podium.animate .podium-place.first {
-		transition-delay: 0.2s;
-	}
-
-	.podium.animate .podium-place.second {
-		transition-delay: 0.4s;
-	}
-
-	.podium.animate .podium-place.third {
-		transition-delay: 0.6s;
-	}
+	.podium.animate .podium-place.first { transition-delay: 0.2s; }
+	.podium.animate .podium-place.second { transition-delay: 0.4s; }
+	.podium.animate .podium-place.third { transition-delay: 0.6s; }
 
 	.podium-player {
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 0.5rem;
+		background: var(--card-bg);
+		border-radius: var(--border-radius);
 		padding: 1rem;
 		margin-bottom: 0.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		border: 1px solid var(--border-color);
 		min-width: 120px;
 	}
 
@@ -249,7 +237,7 @@
 	}
 
 	.player-score {
-		color: #4caf50;
+		color: var(--success-color);
 		font-weight: bold;
 	}
 
@@ -260,11 +248,10 @@
 		border-radius: 0.25rem 0.25rem 0 0;
 		color: white;
 		font-weight: bold;
-		position: relative;
 	}
 
 	.first .podium-bar {
-		background: linear-gradient(45deg, #ffd700, #ffed4a);
+		background: linear-gradient(45deg, var(--accent-color), #ffed4a);
 		height: 80px;
 		width: 120px;
 	}
@@ -287,14 +274,18 @@
 		font-weight: bold;
 	}
 
-	.full-results {
+	.full-results,
+	.summary-card,
+	.correct-song {
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1.5rem;
 		margin-bottom: 2rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
-	.full-results h3 {
+	.full-results h3,
+	.summary-card h4 {
 		margin: 0 0 1rem 0;
 		font-size: 1.2rem;
 	}
@@ -316,8 +307,8 @@
 	}
 
 	.result-item.you {
-		background: rgba(76, 175, 80, 0.2);
-		border-color: rgba(76, 175, 80, 0.3);
+		background: rgba(var(--primary-color-rgb), 0.2);
+		border-color: rgba(var(--primary-color-rgb), 0.3);
 	}
 
 	.position {
@@ -329,7 +320,7 @@
 
 	.rank {
 		font-weight: bold;
-		color: #ffd700;
+		color: var(--accent-color);
 	}
 
 	.player-info {
@@ -345,29 +336,13 @@
 
 	.score {
 		font-weight: bold;
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.you-label {
-		color: #4caf50;
+		color: var(--success-color);
 		font-size: 0.8rem;
 		margin-left: 0.5rem;
-	}
-
-	.player-summary {
-		margin-bottom: 2rem;
-	}
-
-	.summary-card {
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
-		padding: 1.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.summary-card h4 {
-		margin: 0 0 1rem 0;
-		font-size: 1.1rem;
 	}
 
 	.stats {
@@ -390,7 +365,7 @@
 	.stat-value {
 		font-size: 1.1rem;
 		font-weight: bold;
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.actions {
@@ -404,8 +379,8 @@
 		padding: 1rem;
 		background: rgba(255, 193, 7, 0.1);
 		border: 1px solid rgba(255, 193, 7, 0.3);
-		border-radius: 8px;
-		color: #ffd700;
+		border-radius: var(--border-radius);
+		color: var(--accent-color);
 		font-style: italic;
 		text-align: center;
 		min-width: 200px;
@@ -424,29 +399,21 @@
 	.music-note {
 		background: rgba(255, 215, 0, 0.1);
 		border: 1px solid rgba(255, 215, 0, 0.3);
-		border-radius: 8px;
+		border-radius: var(--border-radius);
 		padding: 0.5rem 1rem;
 		margin: 0.5rem 0 1rem 0;
 		display: inline-block;
 	}
 
 	.music-note small {
-		color: #ffd700;
+		color: var(--accent-color);
 		font-style: italic;
-	}
-
-	.correct-song {
-		margin-bottom: 2rem;
-		padding: 1.5rem;
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
 	.correct-song h3 {
 		margin: 0 0 1rem 0;
 		text-align: center;
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.song-info {
@@ -459,7 +426,7 @@
 	.album-cover {
 		width: 100px;
 		height: 100px;
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		object-fit: cover;
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	}
@@ -472,7 +439,7 @@
 		font-size: 1.3rem;
 		font-weight: bold;
 		margin-bottom: 0.25rem;
-		color: #fff;
+		color: var(--text-primary);
 	}
 
 	.artist-name {
@@ -480,7 +447,7 @@
 		color: var(--text-secondary);
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 768px) {
 		.podium-container {
 			flex-direction: column;
 			height: auto;
@@ -500,17 +467,11 @@
 			flex-direction: column;
 		}
 		
-		.btn {
-			width: 100%;
-		}
-		
 		.waiting-host {
 			width: 100%;
 			min-width: auto;
 		}
-	}
 
-	@media (max-width: 600px) {
 		.song-info {
 			flex-direction: column;
 			text-align: center;

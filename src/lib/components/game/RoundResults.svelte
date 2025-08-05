@@ -94,7 +94,7 @@
 	.round-results {
 		padding: 2rem;
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border: 1px solid rgba(255, 255, 255, 0.1);
 		margin-bottom: 2rem;
 	}
@@ -102,7 +102,7 @@
 	.round-results h3 {
 		text-align: center;
 		margin-bottom: 1.5rem;
-		color: #ffd700;
+		color: var(--accent-color);
 	}
 
 	.results-grid {
@@ -118,16 +118,16 @@
 		align-items: center;
 		padding: 1rem;
 		background: rgba(255, 255, 255, 0.03);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border-left: 4px solid transparent;
 	}
 
 	.result-card.correct {
-		border-left-color: #4caf50;
+		border-left-color: var(--success-color);
 	}
 
 	.result-card.incorrect {
-		border-left-color: #f44336;
+		border-left-color: var(--error-color);
 	}
 
 	.player-info {
@@ -144,18 +144,18 @@
 
 	.player-name small {
 		font-weight: normal;
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 		margin-left: 0.5rem;
 	}
 
 	.player-answer {
 		font-size: 0.9rem;
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 	}
 
 	.answer-time {
 		font-size: 0.8rem;
-		color: var(--text-accent, #ffd700);
+		color: var(--accent-color);
 		margin-top: 0.25rem;
 		display: flex;
 		align-items: center;
@@ -175,29 +175,29 @@
 	}
 
 	.result-card.correct .points-gained {
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.result-card.incorrect .points-gained {
-		color: #f44336;
+		color: var(--error-color);
 	}
 
 	.total-score {
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 		font-size: 0.8rem;
 	}
 
 	.fastest-answers {
 		background: rgba(255, 215, 0, 0.1);
 		border: 1px solid rgba(255, 215, 0, 0.3);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1rem;
 		margin: 1.5rem 0;
 	}
 
 	.fastest-answers h4 {
 		margin: 0 0 0.75rem 0;
-		color: #ffd700;
+		color: var(--accent-color);
 		font-size: 1rem;
 		text-align: center;
 	}
@@ -230,11 +230,11 @@
 
 	.speed-time {
 		font-weight: bold;
-		color: #ffd700;
+		color: var(--accent-color);
 	}
 
 	.next-round-info {
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 		font-style: italic;
 		margin: 1.5rem 0 0 0;
 		text-align: center;

@@ -159,7 +159,7 @@
 
 	.audio-player {
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1.5rem;
 		margin-bottom: 2rem;
 		text-align: center;
@@ -175,8 +175,8 @@
 	.audio-btn {
 		font-size: 1.1rem;
 		padding: 1rem 2rem;
-		background: rgba(76, 175, 80, 0.8);
-		border-color: rgba(76, 175, 80, 1);
+		background: rgba(var(--primary-color-rgb), 0.8);
+		border-color: var(--primary-color);
 	}
 
 	.audio-btn:disabled {
@@ -192,7 +192,7 @@
 
 	.spotify-btn {
 		background: rgba(30, 215, 96, 0.8) !important;
-		border-color: rgba(30, 215, 96, 1) !important;
+		border-color: var(--spotify-color) !important;
 	}
 
 	.spotify-btn:hover:not(:disabled) {
@@ -201,7 +201,7 @@
 
 	.pause-btn {
 		background: rgba(255, 193, 7, 0.8) !important;
-		border-color: rgba(255, 193, 7, 1) !important;
+		border-color: var(--warning-color) !important;
 		margin-left: 0.5rem;
 	}
 
@@ -217,17 +217,17 @@
 	}
 
 	.error-info {
-		color: #ff6b6b !important;
+		color: var(--error-color) !important;
 		font-weight: 500;
 	}
 
 	.spotify-info {
-		color: #1ed760 !important;
+		color: var(--spotify-color) !important;
 		font-weight: 500;
 	}
 
 	.host-note {
-		color: #ffd700 !important;
+		color: var(--accent-color) !important;
 		font-weight: 600;
 		display: block;
 		margin-top: 0.25rem;
@@ -251,13 +251,13 @@
 	}
 
 	.answer-btn {
-		background: rgba(255, 255, 255, 0.1);
-		border: 2px solid rgba(255, 255, 255, 0.2);
-		color: white;
+		background: var(--secondary-color);
+		border: 2px solid var(--border-color);
+		color: var(--text-primary);
 		padding: 1rem;
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition: var(--transition);
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
@@ -266,14 +266,14 @@
 	}
 
 	.answer-btn:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.2);
+		background: var(--secondary-hover);
 		border-color: rgba(255, 255, 255, 0.4);
 		transform: translateY(-2px);
 	}
 
 	.answer-btn.selected {
-		background: rgba(76, 175, 80, 0.3);
-		border-color: rgba(76, 175, 80, 0.8);
+		background: rgba(var(--primary-color-rgb), 0.3);
+		border-color: rgba(var(--primary-color-rgb), 0.8);
 	}
 
 	.answer-btn:disabled {
@@ -302,17 +302,11 @@
 		text-align: center;
 		margin-top: 1.5rem;
 		padding: 1rem;
-		background: rgba(76, 175, 80, 0.2);
-		border-radius: 0.5rem;
-		border: 1px solid rgba(76, 175, 80, 0.5);
-		color: #4caf50;
+		background: rgba(var(--primary-color-rgb), 0.2);
+		border-radius: var(--border-radius);
+		border: 1px solid rgba(var(--primary-color-rgb), 0.5);
+		color: var(--success-color);
 		font-weight: 500;
-	}
-
-	@keyframes pulse {
-		0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
-		70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
-		100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
 	}
 
 	@media (max-width: 768px) {

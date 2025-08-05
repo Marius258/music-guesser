@@ -167,11 +167,14 @@
 		margin-bottom: 2rem;
 	}
 
-	.game-id {
+	.game-id,
+	.players-list,
+	.current-settings {
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1rem;
 		margin-bottom: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
 	.id-container {
@@ -189,7 +192,7 @@
 		font-family: monospace;
 		font-size: 1.1rem;
 		letter-spacing: 1px;
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		border: 1px solid var(--border-color);
 	}
 
 	.copy-btn {
@@ -209,9 +212,6 @@
 	}
 
 	.players-list {
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
-		padding: 1rem;
 		min-height: 100px;
 		display: flex;
 		flex-direction: column;
@@ -219,7 +219,7 @@
 	}
 
 	.player {
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--secondary-color);
 		padding: 0.75rem;
 		border-radius: 0.25rem;
 		border: 1px solid rgba(255, 255, 255, 0.1);
@@ -230,13 +230,13 @@
 	}
 
 	.you-label {
-		color: #4caf50;
+		color: var(--success-color);
 		font-size: 0.8rem;
 		margin-left: 0.5rem;
 	}
 
 	.host-label {
-		color: #ffd700;
+		color: var(--accent-color);
 		font-size: 0.8rem;
 		margin-left: 0.5rem;
 	}
@@ -246,20 +246,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--text-secondary);
 		font-style: italic;
 	}
 
 	.host-controls {
 		margin-top: 2rem;
-	}
-
-	.current-settings {
-		margin-bottom: 1.5rem;
-		padding: 1rem;
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 8px;
-		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
 	.current-settings h3 {

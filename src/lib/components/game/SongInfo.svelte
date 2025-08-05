@@ -30,14 +30,14 @@
 		margin-bottom: 2rem;
 		padding: 1.5rem;
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
 	.correct-song h3 {
 		margin: 0 0 1rem 0;
 		text-align: center;
-		color: #4caf50;
+		color: var(--success-color);
 	}
 
 	.song-info {
@@ -50,7 +50,7 @@
 	.album-cover {
 		width: 80px;
 		height: 80px;
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		object-fit: cover;
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	}
@@ -63,12 +63,12 @@
 		font-size: 1.2rem;
 		font-weight: bold;
 		margin-bottom: 0.25rem;
-		color: #fff;
+		color: var(--text-primary);
 	}
 
 	.artist-name {
 		font-size: 1rem;
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 	}
 
 	@media (max-width: 768px) {

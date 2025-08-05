@@ -48,27 +48,27 @@
 		width: 80px;
 		height: 80px;
 		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.1);
-		border: 2px solid rgba(255, 255, 255, 0.2);
-		transition: all 0.3s ease;
+		background: var(--secondary-color);
+		border: 2px solid var(--border-color);
+		transition: var(--transition);
 	}
 
 	.timer.active {
 		background: rgba(255, 193, 7, 0.2);
-		border-color: #ffd700;
+		border-color: var(--accent-color);
 		animation: pulse 2s infinite;
 	}
 
 	.timer.warning {
 		background: rgba(244, 67, 54, 0.2);
-		border-color: #f44336;
+		border-color: var(--error-color);
 		animation: pulse-red 1s infinite;
 	}
 
 	.time {
 		font-size: 1.2rem;
 		font-weight: bold;
-		color: #fff;
+		color: var(--text-primary);
 		z-index: 2;
 	}
 
@@ -85,15 +85,6 @@
 
 	.progress-ring-circle {
 		transition: stroke-dashoffset 0.3s ease;
-	}
-
-	@keyframes pulse {
-		0%, 100% { 
-			box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); 
-		}
-		70% { 
-			box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); 
-		}
 	}
 
 	@keyframes pulse-red {

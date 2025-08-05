@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../app.css';
 	import { onMount } from 'svelte';
 	import { GameClient } from '$lib/game-client.js';
 	import type { GameConfig } from '$lib/game-client.js';
@@ -248,15 +249,6 @@
 </div>
 
 <style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		min-height: 100vh;
-		color: white;
-	}
-
 	.app {
 		min-height: 100vh;
 		display: flex;
@@ -286,70 +278,6 @@
 		align-items: center;
 	}
 
-	:global(.card) {
-		background: rgba(255, 255, 255, 0.1);
-		backdrop-filter: blur(10px);
-		border-radius: 1rem;
-		padding: 2rem;
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-		max-width: 500px;
-		width: 100%;
-	}
-
-	:global(.btn) {
-		background: rgba(255, 255, 255, 0.2);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		color: white;
-		padding: 0.75rem 1.5rem;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		font-size: 1rem;
-		transition: all 0.2s ease;
-		backdrop-filter: blur(5px);
-	}
-
-	:global(.btn:hover) {
-		background: rgba(255, 255, 255, 0.3);
-		transform: translateY(-2px);
-	}
-
-	:global(.btn:disabled) {
-		opacity: 0.5;
-		cursor: not-allowed;
-		transform: none;
-	}
-
-	:global(.btn-primary) {
-		background: rgba(76, 175, 80, 0.8);
-		border-color: rgba(76, 175, 80, 1);
-	}
-
-	:global(.btn-primary:hover) {
-		background: rgba(76, 175, 80, 1);
-	}
-
-	:global(.input) {
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		color: white;
-		padding: 0.75rem;
-		border-radius: 0.5rem;
-		font-size: 1rem;
-		width: 100%;
-		backdrop-filter: blur(5px);
-	}
-
-	:global(.input::placeholder) {
-		color: rgba(255, 255, 255, 0.7);
-	}
-
-	:global(.input:focus) {
-		outline: none;
-		border-color: rgba(255, 255, 255, 0.6);
-		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-	}
-
 	.host-card {
 		max-width: 600px;
 		width: 100%;
@@ -363,7 +291,7 @@
 	.host-welcome h2 {
 		margin: 0 0 1rem 0;
 		font-size: 2rem;
-		color: #1ed760;
+		color: var(--spotify-color);
 	}
 
 	.host-welcome p {
@@ -375,13 +303,13 @@
 	.spotify-status {
 		background: rgba(30, 215, 96, 0.2);
 		border: 1px solid rgba(30, 215, 96, 0.5);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1rem;
 		margin-bottom: 2rem;
 	}
 
 	.spotify-connected {
-		color: #1ed760;
+		color: var(--spotify-color);
 		font-weight: bold;
 		font-size: 1.1rem;
 		margin-bottom: 0.5rem;
@@ -400,7 +328,7 @@
 
 	.create-game-section {
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		padding: 1.5rem;
 	}
 
@@ -409,43 +337,13 @@
 		font-size: 1.3rem;
 	}
 
-	.form-group {
-		margin-bottom: 1rem;
-	}
-
-	.input {
-		width: 100%;
-		padding: 0.75rem;
-		border: 2px solid rgba(255, 255, 255, 0.2);
-		background: rgba(255, 255, 255, 0.1);
-		color: white;
-		border-radius: 0.5rem;
-		font-size: 1rem;
-		box-sizing: border-box;
-	}
-
-	.input::placeholder {
-		color: rgba(255, 255, 255, 0.6);
-	}
-
-	.input:focus {
-		outline: none;
-		border-color: rgba(255, 255, 255, 0.5);
-		background: rgba(255, 255, 255, 0.15);
-	}
-
-	.btn-large {
-		font-size: 1.2rem;
-		padding: 1rem 2rem;
-	}
-
 	.logout-section {
 		text-align: center;
 	}
 
 	.btn-logout {
 		background: rgba(244, 67, 54, 0.8);
-		border-color: rgba(244, 67, 54, 1);
+		border-color: var(--error-color);
 		margin-bottom: 0.5rem;
 	}
 
@@ -460,23 +358,23 @@
 	}
 
 	.connecting-status {
-		color: #ffd700;
+		color: var(--warning-color);
 		font-weight: bold;
 		padding: 0.5rem;
 		background: rgba(255, 215, 0, 0.2);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border: 1px solid rgba(255, 215, 0, 0.5);
 		margin-top: 0.5rem;
 		font-size: 0.9rem;
 	}
 
 	.connected-status {
-		color: #4caf50;
+		color: var(--success-color);
 		font-weight: bold;
 		padding: 0.5rem;
-		background: rgba(76, 175, 80, 0.2);
-		border-radius: 0.5rem;
-		border: 1px solid rgba(76, 175, 80, 0.5);
+		background: rgba(var(--primary-color-rgb), 0.2);
+		border-radius: var(--border-radius);
+		border: 1px solid rgba(var(--primary-color-rgb), 0.5);
 		margin-top: 0.5rem;
 		font-size: 0.9rem;
 	}

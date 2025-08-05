@@ -235,7 +235,7 @@
 
 	.progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, #4caf50, #8bc34a);
+		background: linear-gradient(90deg, var(--success-color), #8bc34a);
 		transition: width 0.3s ease;
 	}
 
@@ -246,20 +246,6 @@
 		justify-content: center;
 		min-height: 200px;
 		gap: 1rem;
-	}
-
-	.loading-spinner {
-		width: 40px;
-		height: 40px;
-		border: 4px solid rgba(255, 255, 255, 0.2);
-		border-top: 4px solid white;
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-	}
-
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
 	}
 
 	@media (max-width: 768px) {

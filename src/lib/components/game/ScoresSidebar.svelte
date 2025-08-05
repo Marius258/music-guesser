@@ -46,7 +46,7 @@
 <style>
 	.scores-sidebar {
 		background: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border: 1px solid rgba(255, 255, 255, 0.1);
 		padding: 1.5rem;
 		height: fit-content;
@@ -57,7 +57,7 @@
 	.scores-sidebar h3 {
 		margin: 0 0 1rem 0;
 		text-align: center;
-		color: #ffd700;
+		color: var(--accent-color);
 	}
 
 	.scores-list {
@@ -72,9 +72,9 @@
 		gap: 0.75rem;
 		padding: 0.75rem;
 		background: rgba(255, 255, 255, 0.03);
-		border-radius: 0.5rem;
+		border-radius: var(--border-radius);
 		border: 1px solid transparent;
-		transition: all 0.2s ease;
+		transition: var(--transition);
 	}
 
 	.score-item.current {
@@ -105,13 +105,13 @@
 
 	.player-name small {
 		font-weight: normal;
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 		margin-left: 0.25rem;
 	}
 
 	.player-score {
 		font-size: 0.9rem;
-		color: var(--text-secondary, #bbb);
+		color: var(--text-secondary);
 		font-weight: bold;
 	}
 

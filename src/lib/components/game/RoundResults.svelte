@@ -29,7 +29,7 @@
 		<SongInfo {track} />
 	{/if}
 	
-	<h3>🏆 Round {roundNumber} Results</h3>
+	<h3>Round {roundNumber} Results</h3>
 	
 	<div class="results-grid">
 		{#each roundResults as result (result.playerId)}
@@ -43,7 +43,7 @@
 					</span>
 					<span class="player-answer">{result.answer}</span>
 					{#if result.answerTime}
-						<span class="answer-time">⏱️ {formatAnswerTime(result.answerTime)}</span>
+						<span class="answer-time">{formatAnswerTime(result.answerTime)}</span>
 					{/if}
 				</div>
 				<div class="points-info">
@@ -61,7 +61,7 @@
 
 	{#if fastestCorrectAnswers.length > 0}
 		<div class="fastest-answers">
-			<h4>⚡ Fastest Correct Answers</h4>
+			<h4>Fastest Correct Answers</h4>
 			<div class="speed-leaderboard">
 				{#each fastestCorrectAnswers as result, index (result.playerId)}
 					<div class="speed-rank">
@@ -81,7 +81,7 @@
 	{/if}
 	
 	<div class="next-round-info">
-		<p>🎵 Next round starting soon...</p>
+		<p>Next round starting soon...</p>
 	</div>
 </div>
 

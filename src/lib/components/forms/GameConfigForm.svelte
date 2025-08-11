@@ -50,6 +50,7 @@
 			
 			if (data.success) {
 				availableGenres = data.categories;
+				console.log("AvailableGenres: ", availableGenres)
 			} else {
 				console.error('Failed to fetch genres:', data.error);
 				throw new Error(data.error || 'Failed to fetch genres');

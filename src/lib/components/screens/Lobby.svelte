@@ -2,7 +2,6 @@
 	import type { GameState, GameConfig } from '$lib/game-client.js';
 		import { GameConfigForm } from '../forms/index.js';
 	import { Loading } from '../common/index.js';
-	import { onMount } from 'svelte';
 
 	interface SpotifyGenre {
 		id: string;
@@ -19,19 +18,6 @@
 
 	let { gameState, onstartgame, onupdateconfig }: Props = $props();
 	let availableGenres = $state<SpotifyGenre[]>([]);
-
-	onMount(async () => {
-		try {
-			const response = await fetch('/api/spotify/categories');
-			const data = await response.json();
-			
-			if (data.success) {
-				availableGenres = data.categories;
-			}
-		} catch (error) {
-			console.error('Error fetching genres:', error);
-		}
-	});
 
 	function copyGameId() {
 		navigator.clipboard.writeText(gameState.id).then(() => {

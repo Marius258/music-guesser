@@ -7,7 +7,7 @@
 		title?: string;
 	}
 
-	let { players, currentPlayerId, title = "🏆 Scores" }: Props = $props();
+	let { players, currentPlayerId, title = "Scores" }: Props = $props();
 
 	// Sort players by score in descending order
 	let sortedPlayers = $derived([...players].sort((a, b) => b.score - a.score));
@@ -18,23 +18,10 @@
 	<div class="scores-list">
 		{#each sortedPlayers as player, index (player.id)}
 			<div class="score-item" class:current={player.id === currentPlayerId}>
-				<div class="rank">
-					{#if index === 0}
-						🥇
-					{:else if index === 1}
-						🥈
-					{:else if index === 2}
-						🥉
-					{:else}
-						#{index + 1}
-					{/if}
-				</div>
 				<div class="player-info">
 					<span class="player-name">
 						{player.name}
-						{#if player.id === currentPlayerId}
-							<small>(You)</small>
-						{/if}
+
 					</span>
 					<span class="player-score">{player.score} pts</span>
 				</div>

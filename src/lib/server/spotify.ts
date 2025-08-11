@@ -13,16 +13,15 @@ export interface SpotifyTrack {
   duration_ms: number; // Track duration for gameplay segments
 }
 
-export interface SpotifyGenre {
+export interface SpotifyCategory {
   id: string;
   name: string;
-  description: string;
-  icons?: { url: string; height: number; width: number }[];
+  icons: { url: string; height: number; width: number }[];
 }
 
 export interface SpotifyCategoriesResponse {
   categories: {
-    items: SpotifyGenre[];
+    items: SpotifyCategory[];
     total: number;
     limit: number;
     offset: number;
@@ -38,152 +37,45 @@ export interface SpotifySearchResponse {
 class SpotifyService {
   private accessToken: string | null = null;
   private tokenExpiry: number = 0;
-  private cachedCategories: SpotifyGenre[] = [];
-  private lastCategoriesUpdate: number = 0;
-  private readonly CATEGORIES_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours for categories only
+  private cachedCategories: SpotifyCategory[] = [];
+  private categoryCacheExpiry: number = 0;
 
-  // Get available music categories - now using curated genres instead of Spotify categories
-  async getMusicCategories(): Promise<SpotifyGenre[]> {
-    // Return a curated list of popular music genres
-    const genres: SpotifyGenre[] = [
-      {
-        id: "mixed",
-        name: "🎵 Mixed (All Genres)",
-        description: "A mix of popular songs from all genres",
-      },
-      {
-        id: "pop",
-        name: "🎤 Pop",
-        description: "Popular mainstream music",
-      },
-      {
-        id: "rock",
-        name: "🎸 Rock",
-        description: "Rock and alternative music",
-      },
-      {
-        id: "hip-hop",
-        name: "🎤 Hip-Hop",
-        description: "Hip-hop and rap music",
-      },
-      {
-        id: "electronic",
-        name: "🎧 Electronic",
-        description: "Electronic and dance music",
-      },
-      {
-        id: "indie",
-        name: "🎵 Indie",
-        description: "Independent and alternative music",
-      },
-      {
-        id: "r&b",
-        name: "🎶 R&B",
-        description: "R&B and soul music",
-      },
-      {
-        id: "country",
-        name: "🤠 Country",
-        description: "Country and folk music",
-      },
-      {
-        id: "jazz",
-        name: "🎺 Jazz",
-        description: "Jazz and blues music",
-      },
-      {
-        id: "classical",
-        name: "🎼 Classical",
-        description: "Classical and orchestral music",
-      },
-      {
-        id: "reggae",
-        name: "🏝️ Reggae",
-        description: "Reggae and Caribbean music",
-      },
-      {
-        id: "metal",
-        name: "🤘 Metal",
-        description: "Heavy metal and hard rock",
-      },
-      {
-        id: "funk",
-        name: "🕺 Funk",
-        description: "Funk and disco music",
-      },
-      {
-        id: "latin",
-        name: "🌶️ Latin",
-        description: "Latin and Spanish music",
-      },
-      {
-        id: "ambient",
-        name: "🌙 Ambient",
-        description: "Ambient and chill music",
-      },
-    ];
-
-    console.log(`Using curated genres: ${genres.length} genres available`);
-    return genres;
-  }
-
-  // Add appropriate emojis to category names
-  private addEmojiToCategory(name: string, id: string): string {
-    const emojiMap: Record<string, string> = {
-      pop: "🎤",
-      rock: "🎸",
-      hiphop: "🎤",
-      "hip-hop": "🎤",
-      rap: "🎤",
-      electronic: "🎧",
-      dance: "�",
-      edm: "🎧",
-      indie: "🎵",
-      alternative: "🎵",
-      country: "🤠",
-      folk: "🌾",
-      rnb: "🎶",
-      "r&b": "🎶",
-      soul: "🎶",
-      jazz: "🎺",
-      blues: "🎺",
-      classical: "🎼",
-      orchestra: "🎼",
-      reggae: "🏝️",
-      caribbean: "🏝️",
-      metal: "🤘",
-      punk: "🤘",
-      funk: "🕺",
-      disco: "🕺",
-      latin: "🌶️",
-      spanish: "🌶️",
-      world: "🌍",
-      ambient: "🌙",
-      chill: "😌",
-      workout: "💪",
-      party: "🎉",
-      focus: "🧠",
-      sleep: "😴",
-      mood: "💭",
-      decades: "�",
-      throwback: "⏰",
-      covers: "🎭",
-      acoustic: "🎻",
-      instrumental: "🎹",
-    };
-
-    const lowerName = name.toLowerCase();
-    const lowerCatId = id.toLowerCase();
-
-    // Try to find emoji by category name or id
-    for (const [key, emoji] of Object.entries(emojiMap)) {
-      if (lowerName.includes(key) || lowerCatId.includes(key)) {
-        return `${emoji} ${name}`;
-      }
+  async getMusicCategories(): Promise<SpotifyCategory[]> {
+    // Return cached categories if still valid (cache for 1 hour)
+    if (this.cachedCategories.length > 0 && Date.now() < this.categoryCacheExpiry) {
+      return this.cachedCategories;
     }
 
-    // Default emoji for unmatched categories
-    return `🎵 ${name}`;
+    try {
+      const token = await this.getAccessToken();
+      const response = await fetch("https://api.spotify.com/v1/browse/categories?limit=50&country=US", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch categories: ${response.status}`);
+      }
+
+      const data: SpotifyCategoriesResponse = await response.json();
+
+      // Filter out categories that work well for music guessing games
+      const musicCategories = data.categories.items.filter((category) => {
+        const name = category.name.toLowerCase();
+        // Include music-focused categories, exclude podcasts, audiobooks, etc.
+        return !name.includes("podcast") && !name.includes("audiobook") && !name.includes("word") && !name.includes("talk");
+      });
+
+      this.cachedCategories = musicCategories;
+      this.categoryCacheExpiry = Date.now() + 3600000; // Cache for 1 hour
+
+      console.log(`Fetched ${musicCategories.length} music categories from Spotify`);
+      return musicCategories;
+    } catch (error) {
+      console.error("Error fetching Spotify categories:", error);
+      throw new Error("Failed to fetch categories from Spotify. Please check your internet connection and try again.");
+    }
   }
 
   // Generate authorization URL for user login
@@ -269,161 +161,104 @@ class SpotifyService {
     return this.accessToken;
   }
 
-  async searchTracks(query: string, limit: number = 50): Promise<SpotifyTrack[]> {
-    const token = await this.getAccessToken();
-
-    // Add random offset to get different results each time (max 1000 as per Spotify API limits)
-    const randomOffset = Math.floor(Math.random() * Math.min(200, 1000));
-
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}&offset=${randomOffset}&market=US`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Spotify search failed: ${response.status}`);
-    }
-
-    const data: SpotifySearchResponse = await response.json();
-    return data.tracks.items;
-  }
-
-  async getAlternativePopularTracks(): Promise<SpotifyTrack[]> {
-    try {
-      // Use alternative search queries for variety
-      const alternativeQueries = ["genre:pop", "genre:rock", "genre:hip-hop", "year:2020", "year:2019", "year:2018", "top hits", "popular songs"];
-
-      const randomQuery = alternativeQueries[Math.floor(Math.random() * alternativeQueries.length)];
-      console.log(`Using alternative search strategy: "${randomQuery}"`);
-
-      const tracks = await this.searchTracks(randomQuery, 50);
-      const goodTracks = tracks.filter((track) => track.popularity > 30);
-
-      console.log(`Got ${goodTracks.length} tracks from alternative search`);
-      return goodTracks;
-    } catch (error) {
-      console.error("Error fetching alternative popular tracks:", error);
-      throw new Error(`Failed to fetch alternative popular tracks: ${error instanceof Error ? error.message : "Unknown error"}`);
-    }
-  }
-
-  async getRandomPopularTracks(count: number = 50): Promise<SpotifyTrack[]> {
-    // Use specific queries for well-established tracks and popular artists
-    const queries = [
-      "year:2010-2020", // Well-established tracks
-      "year:2005-2015",
-      "year:2000-2010",
-      "genre:pop year:2010-2020",
-      "genre:rock year:2010-2020",
-      "genre:hip-hop year:2010-2020",
-      "genre:indie year:2010-2020",
-      "genre:electronic year:2010-2020",
-      "artist:taylor swift",
-      "artist:ed sheeran",
-      "artist:drake",
-      "artist:ariana grande",
-      "artist:post malone",
-      "artist:billie eilish",
-      "artist:the weeknd",
-      "artist:dua lipa",
-      "artist:bruno mars",
-      "artist:adele",
-      "track:shape of you",
-      "track:blinding lights",
-      "track:someone like you",
-      "track:rolling in the deep",
-      "track:uptown funk",
-      "track:bad guy",
-      "track:stay",
-      "track:levitating",
-      "album:25 adele",
-      "album:divide ed sheeran",
-      "album:scorpion drake",
-    ];
-
-    const randomQuery = queries[Math.floor(Math.random() * queries.length)];
-    console.log(`Searching Spotify with query: "${randomQuery}"`);
-
-    const tracks = await this.searchTracks(randomQuery, count);
-    console.log(`Found ${tracks.length} tracks from Spotify`);
-
-    // Filter tracks with good popularity scores for Web Playback SDK
-    const goodTracks = tracks.filter(
-      (track) => track.popularity > 30 // Good popularity for well-known tracks
-    );
-    console.log(`Tracks with popularity > 30: ${goodTracks.length}`);
-
-    // Shuffle the results
-    return goodTracks.sort(() => Math.random() - 0.5);
-  }
-
   async getTracksByCategory(categoryId: string, count: number = 50): Promise<SpotifyTrack[]> {
-    // Handle the special "mixed" category
-    if (categoryId === "mixed") {
-      return this.getRandomPopularTracks(count);
-    }
-
     try {
       console.log(`Fetching tracks for category: ${categoryId}`);
 
-      // Find the category in our cached categories to get the clean name
       let categoryName = categoryId;
       const category = this.cachedCategories.find((cat) => cat.id === categoryId);
       if (category) {
-        // Remove emoji and clean up the name for better searching
-        categoryName = category.name.replace(/^[^\w\s]+\s*/, "").trim(); // Remove leading emoji
-        console.log(`Using category name "${categoryName}" for searches`);
+        categoryName = category.name;
+        console.log(`Found category name: "${categoryName}"`);
       }
 
-      // Create search queries based on the clean category name
-      const searchQueries = [`genre:"${categoryName.toLowerCase()}"`, categoryName.toLowerCase()];
+      // Use search with genre filter for better accuracy
+      const tracks = await this.getTracksFromGenreSearch(categoryId, categoryName, count);
 
-      // If category name contains specific keywords, add more targeted searches
-      const keywords = categoryName.toLowerCase().split(/[\s\-&]+/);
-      for (const keyword of keywords) {
-        if (keyword.length > 3) {
-          // Only use meaningful keywords
-          searchQueries.push(`genre:"${keyword}"`);
-        }
+      if (tracks.length >= 4) {
+        console.log(`Successfully got ${tracks.length} tracks for category "${categoryName}"`);
+        return tracks;
       }
 
-      const tracks: SpotifyTrack[] = [];
-      const maxQueries = Math.min(3, searchQueries.length);
-
-      for (let i = 0; i < maxQueries; i++) {
-        const query = searchQueries[i];
-        console.log(`Searching with query: "${query}"`);
-
-        const searchTracks = await this.searchTracks(query, Math.ceil(count / maxQueries));
-        const goodTracks = searchTracks.filter((track) => track.popularity > 30);
-
-        tracks.push(...goodTracks);
-        console.log(`Found ${goodTracks.length} tracks from search query "${query}"`);
-
-        // Small delay between requests to avoid rate limiting
-        if (i < maxQueries - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-      }
-
-      if (tracks.length === 0) {
-        throw new Error(`No tracks found for category "${categoryId}" ("${categoryName}")`);
-      }
-
-      // Remove duplicates and shuffle
-      const uniqueTracks = tracks.filter((track, index, self) => index === self.findIndex((t) => t.id === track.id));
-
-      console.log(`Category "${categoryId}" returned ${uniqueTracks.length} unique tracks from search`);
-      return uniqueTracks.sort(() => Math.random() - 0.5);
+      throw new Error(`Insufficient tracks found for category "${categoryId}" ("${categoryName}"). Found: ${tracks.length}, need at least 4`);
     } catch (error) {
       console.error(`Error fetching tracks for category ${categoryId}:`, error);
-      throw new Error(
-        `Failed to fetch tracks for category "${categoryId}" from Spotify: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
+      throw new Error(`Failed to fetch tracks for category "${categoryId}"`);
+    }
+  }
+
+  private async getTracksFromGenreSearch(categoryId: string, categoryName: string, count: number): Promise<SpotifyTrack[]> {
+    try {
+      console.log(`Searching for tracks in Spotify category: "${categoryName}"`);
+
+      // Use search with genre filter instead of deprecated category playlists
+      const tracks = await this.searchTracksByGenre(categoryName, count);
+
+      if (tracks.length === 0) {
+        console.log(`No tracks found for category "${categoryName}"`);
+        return [];
+      }
+
+      console.log(`Category "${categoryName}" yielded ${tracks.length} tracks from search`);
+      return tracks.sort(() => Math.random() - 0.5).slice(0, count);
+    } catch (error) {
+      console.log(`Search approach failed for "${categoryName}":`, error);
+      return [];
+    }
+  }
+
+  private async searchTracksByGenre(categoryName: string, count: number): Promise<SpotifyTrack[]> {
+    try {
+      const token = await this.getAccessToken();
+
+      // Create genre-specific search queries
+      const searchQuery = `genre:${categoryName}`;
+      const allTracks: SpotifyTrack[] = [];
+
+      console.log(`Searching with query: "${searchQuery}"`);
+
+      // Add random offset to get different results each time (max 1000 as per Spotify API limits)
+      const randomOffset = Math.floor(Math.random() * Math.min(200, 1000));
+
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&market=US`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(`Search response: ${response}`);
+      if (!response.ok) {
+        console.log(`Search failed for query "${searchQuery}": ${response.status}`);
+      }
+
+      const data = await response.json();
+      const tracks = data.tracks?.items || [];
+
+      // Filter and map tracks
+      const validTracks = tracks
+        .filter((track: any) => track.popularity > 30)
+        .map((track: any) => ({
+          id: track.id,
+          name: track.name,
+          artists: track.artists || [{ name: "Unknown Artist" }],
+          uri: track.uri,
+          album: {
+            name: track.album?.name || "Unknown Album",
+            images: track.album?.images || [],
+          },
+          popularity: track.popularity || 0,
+          duration_ms: track.duration_ms || 30000,
+        }));
+
+      allTracks.push(...validTracks);
+      console.log(`Found ${validTracks.length} valid tracks from search: "${searchQuery}"`);
+
+      // Remove duplicates
+      const uniqueTracks = allTracks.filter((track, index, self) => index === self.findIndex((t) => t.id === track.id));
+
+      return uniqueTracks;
+    } catch (error) {
+      console.error(`Error searching tracks by genre:`, error);
+      return [];
     }
   }
 

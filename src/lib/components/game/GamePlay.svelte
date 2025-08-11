@@ -133,30 +133,6 @@
 		onsubmitanswer(answer);
 	}
 
-
-
-	function toggleSpotifyPlayback() {
-		if (!gameState.isHost || !spotifyWebPlayback.isPlayerReady()) return;
-		
-		if (spotifyPlaying) {
-			spotifyWebPlayback.pause();
-			spotifyPlaying = false;
-		} else {
-			playSpotifyTrack();
-		}
-	}
-
-	async function manualPlaySpotify() {
-		if (!gameState.isHost || !gameState.currentQuestion?.spotifyUri) return;
-		
-		try {
-			await playSpotifyTrack();
-			playbackError = null;
-		} catch (error) {
-			console.error('Manual Spotify play failed:', error);
-			playbackError = `Failed to play: ${error instanceof Error ? error.message : 'Unknown error'}`;
-		}
-	}
 </script>
 
 <div class="card game-card">
@@ -196,17 +172,10 @@
 			<GameQuestion 
 				question={gameState.currentQuestion}
 				isHost={gameState.isHost}
-				currentRound={gameState.currentRound}
-				totalRounds={gameState.totalRounds}
 				selectedAnswer={selectedAnswer}
 				hasAnswered={hasAnswered}
-				spotifyPlaying={spotifyPlaying}
-				playbackError={playbackError}
 				hostOnlyMode={gameState.config?.hostOnlyMode ?? false}
 				onSelectAnswer={selectAnswer}
-				onManualPlaySpotify={manualPlaySpotify}
-				onToggleSpotifyPlayback={toggleSpotifyPlayback}
-				{spotifyWebPlayback}
 			/>
 		{:else}
 			<Loading text="Preparing next round..." />

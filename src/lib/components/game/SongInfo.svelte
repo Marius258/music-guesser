@@ -7,7 +7,7 @@
 		showTitle?: boolean;
 	}
 
-	let { track, title = "🎵 Correct Song", showTitle = true }: Props = $props();
+	let { track, title = "Correct Song", showTitle = false }: Props = $props();
 </script>
 
 <div class="correct-song">

@@ -28,16 +28,11 @@
 		<div class="results-header">
 			<h2>🎉 Game Complete! 🎉</h2>
 			<p>Here are the final results:</p>
-			{#if gameState.isHost}
-				<div class="music-note">
-					<small>🎵 Final song continues playing - use controls below to navigate</small>
-				</div>
-			{/if}
 		</div>
 
 		{#if gameState.currentTrack}
 			<div class="correct-song">
-				<h3>🎵 Final Song</h3>
+				<h3>Final Song</h3>
 				<div class="song-info">
 					{#if gameState.currentTrack.imageUrl}
 						<img src={gameState.currentTrack.imageUrl} alt="Album cover" class="album-cover" />
@@ -130,15 +125,15 @@
 		<div class="actions">
 			{#if gameState.isHost}
 				<button class="btn btn-primary" onclick={onplayagain}>
-					🔄 Play Again
+					Play Again
 				</button>
 			{:else}
 				<div class="waiting-host">
-					<p>🕐 Waiting for host to start a new game...</p>
+					<p>Waiting for host to start a new game...</p>
 				</div>
 			{/if}
 			<button class="btn" onclick={() => window.location.reload()}>
-				🏠 Home
+				Home
 			</button>
 		</div>
 	</div>

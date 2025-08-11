@@ -43,7 +43,7 @@ export function calculatePoints(isCorrect: boolean, timeElapsed: number, roundDu
   if (!isCorrect) return 0;
 
   const basePoints = 100;
-  const falloffStart = 500;
+  const falloffStart = 1000;
 
   if (timeElapsed <= falloffStart) return basePoints;
 

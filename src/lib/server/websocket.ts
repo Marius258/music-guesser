@@ -23,6 +23,7 @@ export interface GameConfig {
   roundDurationSeconds: number;
   randomStartTime: boolean;
   musicCategory: string;
+  hostOnlyMode: boolean;
 }
 
 export interface GameState {
@@ -100,6 +101,7 @@ class GameManager {
         roundDurationSeconds: 30,
         randomStartTime: true,
         musicCategory: "mixed",
+        hostOnlyMode: false,
       },
       playersAnswered: new Set(),
       roundTimer: undefined,
@@ -258,6 +260,11 @@ class GameManager {
       return;
     }
 
+    // In host-only mode, prevent the host from submitting answers
+    if (game.config.hostOnlyMode && playerId === game.hostId) {
+      return; // Host cannot participate in answering
+    }
+
     // Check if player already answered this round
     if (game.playersAnswered.has(playerId)) {
       return; // Player already answered, ignore duplicate
@@ -302,7 +309,11 @@ class GameManager {
     );
 
     // Check if all players have answered
-    if (game.playersAnswered.size >= game.players.size) {
+    const expectedAnswers = game.config.hostOnlyMode
+      ? game.players.size - 1 // Exclude host from count
+      : game.players.size;
+
+    if (game.playersAnswered.size >= expectedAnswers) {
       console.log(`All players answered for game ${gameId}, ending round early`);
       // Clear the timeout since we're ending early
       if (game.roundTimer) {
@@ -453,7 +464,11 @@ class GameManager {
       this.games.delete(gameId);
     } else {
       // Check if all remaining players have answered (early round end)
-      if (game.gameStarted && game.currentSong && game.playersAnswered.size >= game.players.size) {
+      const expectedAnswers = game.config.hostOnlyMode
+        ? game.players.size - 1 // Exclude host from count
+        : game.players.size;
+
+      if (game.gameStarted && game.currentSong && game.playersAnswered.size >= expectedAnswers) {
         console.log(`All remaining players answered for game ${gameId}, ending round early`);
         if (game.roundTimer) {
           clearTimeout(game.roundTimer);

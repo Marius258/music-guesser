@@ -5,6 +5,7 @@ export interface GameConfig {
   roundDurationSeconds: number;
   randomStartTime: boolean;
   musicCategory: string;
+  hostOnlyMode: boolean; // Host plays music but doesn't participate in answering
 }
 
 export interface RoundResult {
@@ -96,6 +97,7 @@ export class GameClient {
       roundDurationSeconds: 30,
       randomStartTime: false,
       musicCategory: "mixed",
+      hostOnlyMode: false,
     },
   };
   private connectionState: "disconnected" | "connecting" | "connected" = "disconnected";

@@ -42,12 +42,20 @@ export function generatePlayerId(): string {
 export function calculatePoints(isCorrect: boolean, timeElapsed: number, roundDuration: number): number {
   if (!isCorrect) return 0;
 
-  // Award points based on speed (faster = more points)
-  const speedBonus = Math.max(0, (roundDuration - timeElapsed) / 1000);
   const basePoints = 100;
-  const timeBonus = Math.round(speedBonus * 2); // 2 points per second saved
+  const falloffStart = 500;
 
-  return basePoints + timeBonus;
+  if (timeElapsed <= falloffStart) return basePoints;
+
+  // Calculate the fraction of time after falloffStart
+  const effectiveDuration = roundDuration - falloffStart;
+  const timeAfterFalloff = Math.max(0, timeElapsed - falloffStart);
+
+  // Linear falloff: points decrease from 100 to 0 as timeAfterFalloff goes from 0 to effectiveDuration
+  const fraction = Math.min(1, timeAfterFalloff / effectiveDuration);
+  const points = Math.round(basePoints * (1 - fraction));
+
+  return points;
 }
 
 /**

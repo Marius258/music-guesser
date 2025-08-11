@@ -165,7 +165,7 @@
 			<div class="round-info">
 				<h2>
 					{#if gameState.currentRound >= gameState.totalRounds}
-						🏁 Final Round {gameState.currentRound} / {gameState.totalRounds}
+						Final Round {gameState.currentRound} / {gameState.totalRounds}
 					{:else}
 						Round {gameState.currentRound} / {gameState.totalRounds}
 					{/if}
@@ -202,6 +202,7 @@
 				hasAnswered={hasAnswered}
 				spotifyPlaying={spotifyPlaying}
 				playbackError={playbackError}
+				hostOnlyMode={gameState.config?.hostOnlyMode ?? false}
 				onSelectAnswer={selectAnswer}
 				onManualPlaySpotify={manualPlaySpotify}
 				onToggleSpotifyPlayback={toggleSpotifyPlayback}

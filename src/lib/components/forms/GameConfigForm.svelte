@@ -23,6 +23,7 @@
 		roundDurationSeconds: config.roundDurationSeconds,
 		randomStartTime: config.randomStartTime,
 		musicCategory: config.musicCategory,
+		hostOnlyMode: config.hostOnlyMode,
 	});
 
 	let availableGenres = $state<SpotifyGenre[]>([]);
@@ -35,7 +36,8 @@
 			localConfig.totalRounds !== config.totalRounds ||
 			localConfig.roundDurationSeconds !== config.roundDurationSeconds ||
 			localConfig.randomStartTime !== config.randomStartTime ||
-			localConfig.musicCategory !== config.musicCategory
+			localConfig.musicCategory !== config.musicCategory ||
+			localConfig.hostOnlyMode !== config.hostOnlyMode
 		) {
 			onupdateconfig(localConfig);
 		}
@@ -68,6 +70,7 @@
 			roundDurationSeconds: 30,
 			randomStartTime: true,
 			musicCategory: "mixed",
+			hostOnlyMode: false,
 		};
 		// Config will auto-save due to $effect
 	}
@@ -163,6 +166,19 @@
 				Random Start Time
 			</label>
 			<small>Start songs at random positions (more challenging) or from the beginning</small>
+		</div>
+
+		<div class="form-group">
+			<label class="checkbox-label">
+				<input 
+					type="checkbox" 
+					bind:checked={localConfig.hostOnlyMode}
+					class="checkbox"
+				/>
+				<span class="checkmark"></span>
+				Host Only Mode
+			</label>
+			<small>Host plays music but doesn't participate in answering questions</small>
 		</div>
 
 		<div class="form-actions">

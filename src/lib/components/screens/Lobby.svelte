@@ -104,7 +104,7 @@
 
 				{#if gameState.config}
 					<div class="current-settings">
-						<h3>🎛️ Current Game Settings</h3>
+						<h3>Current Game Settings</h3>
 						<div class="config-items">
 							<div class="config-item">
 								<span class="config-label">Rounds:</span>
@@ -115,7 +115,11 @@
 								<span class="config-value">{gameState.config.roundDurationSeconds}s</span>
 							</div>						<div class="config-item">
 							<span class="config-label">Random Start:</span>
-							<span class="config-value">{gameState.config.randomStartTime ? '✅ Yes' : '❌ No'}</span>
+							<span class="config-value">{gameState.config.randomStartTime ? 'Yes' : 'No'}</span>
+						</div>
+						<div class="config-item">
+							<span class="config-label">Host Mode:</span>
+							<span class="config-value">{gameState.config.hostOnlyMode ? 'Host Only' : 'Participates'}</span>
 						</div>
 						<div class="config-item">
 							<span class="config-label">Music Genre:</span>

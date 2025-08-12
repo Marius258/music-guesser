@@ -1,4 +1,5 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
+import genres from "../../../static/spotify-genres.json";
 
 export interface SpotifyTrack {
   id: string;
@@ -16,16 +17,8 @@ export interface SpotifyTrack {
 export interface SpotifyCategory {
   id: string;
   name: string;
-  icons: { url: string; height: number; width: number }[];
-}
-
-export interface SpotifyCategoriesResponse {
-  categories: {
-    items: SpotifyCategory[];
-    total: number;
-    limit: number;
-    offset: number;
-  };
+  icons?: { url: string; height: number; width: number }[];
+  description?: string;
 }
 
 export interface SpotifySearchResponse {
@@ -47,34 +40,21 @@ class SpotifyService {
     }
 
     try {
-      const token = await this.getAccessToken();
-      const response = await fetch("https://api.spotify.com/v1/browse/categories?limit=50&country=US", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // Use local genres from spotify-genres.json
+      const mainGenres = genres.genres.map((genre) => ({
+        id: genre.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+        name: genre,
+        description: `Songs from the ${genre} genre`,
+      }));
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch categories: ${response.status}`);
-      }
-
-      const data: SpotifyCategoriesResponse = await response.json();
-
-      // Filter out categories that work well for music guessing games
-      const musicCategories = data.categories.items.filter((category) => {
-        const name = category.name.toLowerCase();
-        // Include music-focused categories, exclude podcasts, audiobooks, etc.
-        return !name.includes("podcast") && !name.includes("audiobook") && !name.includes("word") && !name.includes("talk");
-      });
-
-      this.cachedCategories = musicCategories;
+      this.cachedCategories = mainGenres;
       this.categoryCacheExpiry = Date.now() + 3600000; // Cache for 1 hour
 
-      console.log(`Fetched ${musicCategories.length} music categories from Spotify`);
-      return musicCategories;
+      console.log(`Loaded ${mainGenres.length} music genres from local file`);
+      return mainGenres;
     } catch (error) {
-      console.error("Error fetching Spotify categories:", error);
-      throw new Error("Failed to fetch categories from Spotify. Please check your internet connection and try again.");
+      console.error("Error loading music genres:", error);
+      throw new Error("Failed to load music genres. Please check the configuration and try again.");
     }
   }
 
@@ -205,20 +185,20 @@ class SpotifyService {
       const token = await this.getAccessToken();
 
       // Create genre-specific search queries
-      const searchQuery = `genre:${categoryName}`;
+      const searchQuery = `genre:"${categoryName}"`;
       const allTracks: SpotifyTrack[] = [];
 
       console.log(`Searching with query: "${searchQuery}"`);
 
-      // Add random offset to get different results each time (max 500 as per Spotify API limits)
-      const randomOffset = Math.floor(Math.random() * Math.min(200, 500));
-
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&market=US&offset=${randomOffset}`, {
+      // Add random offset to get different results each time (max 300 as per Spotify API limits)
+      const randomOffset = Math.floor(Math.random() * Math.min(200, 300));
+      //&offset=${randomOffset}
+      console.log(`Using random offset: ${randomOffset}`);
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&market=US`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(`Search response: ${response}`);
       if (!response.ok) {
         console.log(`Search failed for query "${searchQuery}": ${response.status}`);
       }

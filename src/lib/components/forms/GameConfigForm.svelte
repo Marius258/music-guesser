@@ -50,16 +50,13 @@
 			
 			if (data.success) {
 				availableGenres = data.categories;
-				console.log("AvailableGenres: ", availableGenres)
+				console.log("AvailableGenres: ", availableGenres);
 			} else {
 				console.error('Failed to fetch genres:', data.error);
 				throw new Error(data.error || 'Failed to fetch genres');
 			}
 		} catch (error) {
 			console.error('Error fetching genres:', error);
-			// No fallback - show error to user
-			genresLoading = false;
-			// You could set an error state here to show to the user
 		} finally {
 			genresLoading = false;
 		}
@@ -73,12 +70,17 @@
 			musicCategory: "mixed",
 			hostOnlyMode: false,
 		};
-		// Config will auto-save due to $effect
 	}
 
-	function selectGenre(genreId: string) {
-		localConfig.musicCategory = genreId;
-		// Config will auto-save due to $effect
+	function selectGenre(genreName: string) {
+		// If "Mixed" is selected, use "mixed" as the category
+		if (genreName.toLowerCase() === 'mixed') {
+			localConfig.musicCategory = 'mixed';
+			return;
+		}
+		
+		// Set the genre as the category
+		localConfig.musicCategory = genreName;
 	}
 
 	function getGenreImage(genre: SpotifyGenre): string | null {
@@ -130,28 +132,52 @@
 			{#if genresLoading}
 				<Loading text="Loading music genres..." size="small" />
 			{:else}
-				<div class="genres-grid">
-					{#each availableGenres as genre (genre.name)}
+				<!-- Mixed option always first -->
+				<div class="genres-section">
+					<h4>Quick Select</h4>
+					<div class="genre-quick-select">
 						<button 
-							class="genre-card {localConfig.musicCategory === genre.name ? 'selected' : ''}"
-							onclick={() => selectGenre(genre.name)}
+							class="genre-card quick-select {localConfig.musicCategory === 'mixed' ? 'selected' : ''}"
+							onclick={() => selectGenre('Mixed')}
 						>
-							<div class="genre-image">
-								{#if getGenreImage(genre)}
-									<img src={getGenreImage(genre)} alt={genre.name} />
-								{:else}
-									<div class="genre-icon">🎵</div>
-								{/if}
-							</div>
+							<div class="genre-icon">🎵</div>
 							<div class="genre-info">
-								<h4>{genre.name}</h4>
-								<p>{genre.description}</p>
+								<h4>Mixed</h4>
+								<p>Songs from all genres</p>
 							</div>
-							{#if localConfig.musicCategory === genre.name}
+							{#if localConfig.musicCategory === 'mixed'}
 								<div class="selected-badge">✓</div>
 							{/if}
 						</button>
-					{/each}
+					</div>
+				</div>
+
+				<!-- Main genres -->
+				<div class="genres-section">
+					<h4>Main Genres</h4>
+					<div class="genres-grid">
+						{#each availableGenres as genre (genre.name)}
+							<button 
+								class="genre-card {localConfig.musicCategory === genre.name ? 'selected' : ''}"
+								onclick={() => selectGenre(genre.name)}
+							>
+								<div class="genre-image">
+									{#if getGenreImage(genre)}
+										<img src={getGenreImage(genre)} alt={genre.name} />
+									{:else}
+										<div class="genre-icon">🎵</div>
+									{/if}
+								</div>
+								<div class="genre-info">
+									<h4>{genre.name}</h4>
+									<p>{genre.description}</p>
+								</div>
+								{#if localConfig.musicCategory === genre.name}
+									<div class="selected-badge">✓</div>
+								{/if}
+							</button>
+						{/each}
+					</div>
 				</div>
 			{/if}
 		</div>
@@ -278,6 +304,25 @@
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: 1rem;
 		margin-top: 0.5rem;
+	}
+
+	.genres-section {
+		margin-bottom: 1.5rem;
+	}
+
+	.genres-section h4 {
+		margin: 0 0 0.5rem 0;
+		color: var(--text-primary);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	.genre-quick-select {
+		margin-bottom: 1rem;
+	}
+
+	.genre-card.quick-select {
+		max-width: 300px;
 	}
 
 	.genre-card {

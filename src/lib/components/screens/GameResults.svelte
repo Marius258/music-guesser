@@ -380,11 +380,6 @@
 		display: inline-block;
 	}
 
-	.music-note small {
-		color: var(--accent-color);
-		font-style: italic;
-	}
-
 	.correct-song h3 {
 		margin: 0 0 1rem 0;
 		text-align: center;

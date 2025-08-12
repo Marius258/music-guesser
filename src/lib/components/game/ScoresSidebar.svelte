@@ -69,12 +69,6 @@
 		border-color: rgba(255, 193, 7, 0.3);
 	}
 
-	.rank {
-		font-size: 1.2rem;
-		font-weight: bold;
-		min-width: 30px;
-		text-align: center;
-	}
 
 	.player-info {
 		display: flex;
@@ -90,12 +84,6 @@
 		text-overflow: ellipsis;
 	}
 
-	.player-name small {
-		font-weight: normal;
-		color: var(--text-secondary);
-		margin-left: 0.25rem;
-	}
-
 	.player-score {
 		font-size: 0.9rem;
 		color: var(--text-secondary);
@@ -109,11 +97,6 @@
 		
 		.score-item {
 			padding: 0.5rem;
-		}
-		
-		.rank {
-			font-size: 1rem;
-			min-width: 25px;
 		}
 		
 		.player-name {

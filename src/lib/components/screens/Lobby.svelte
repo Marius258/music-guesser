@@ -6,8 +6,9 @@
 	interface SpotifyGenre {
 		id: string;
 		name: string;
-		description: string;
 		icons?: { url: string; height: number; width: number }[];
+		isMainGenre?: boolean;
+		subgenres?: string[];
 	}
 
 	interface Props {
@@ -18,12 +19,6 @@
 
 	let { gameState, onstartgame, onupdateconfig }: Props = $props();
 	let availableGenres = $state<SpotifyGenre[]>([]);
-
-	function copyGameId() {
-		navigator.clipboard.writeText(gameState.id).then(() => {
-			// You could add a toast notification here
-		});
-	}
 
 	function getGenreDisplayName(genreId: string): string {
 		// Only try to find the genre from Spotify API data
@@ -46,11 +41,7 @@
 				<h3>Game ID:</h3>
 				<div class="id-container">
 					<code class="game-id-code">{gameState.id}</code>
-					<button class="btn copy-btn" onclick={copyGameId} title="Copy to clipboard">
-						📋
-					</button>
 				</div>
-				<p class="share-text">Share this ID with other players so they can join!</p>
 			</div>
 		</div>
 
@@ -65,7 +56,7 @@
 								<span class="you-label">(You)</span>
 							{/if}
 							{#if gameState.isHost && player.id === gameState.playerId}
-								<span class="host-label">👑 Host</span>
+								<span class="host-label">Host</span>
 							{/if}
 						</span>
 					</div>
@@ -177,18 +168,6 @@
 		font-size: 1.1rem;
 		letter-spacing: 1px;
 		border: 1px solid var(--border-color);
-	}
-
-	.copy-btn {
-		padding: 0.25rem 0.5rem;
-		font-size: 0.8rem;
-		min-width: auto;
-	}
-
-	.share-text {
-		font-size: 0.9rem;
-		opacity: 0.7;
-		margin: 0.5rem 0 0 0;
 	}
 
 	.players-section {

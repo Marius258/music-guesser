@@ -17,23 +17,12 @@
 <!-- Host mode when Spotify is connected -->
 <div class="card host-card">
 	<div class="host-welcome">
-		<h2>Host Mode - Spotify Connected</h2>
-		<p>You're connected to Spotify and can host games with full music playback!</p>
+		<h2>Host Mode</h2>
 		
 		<div class="spotify-status">
 			<div class="spotify-connected">
 				Spotify Premium Connected
 			</div>
-			<small>You can play full tracks during the game</small>
-			{#if connecting}
-				<div class="connecting-status">
-					Connecting to game server...
-				</div>
-			{:else if connected}
-				<div class="connected-status">
-					Connected to game server
-				</div>
-			{/if}
 		</div>
 
 		<div class="host-actions">
@@ -64,7 +53,6 @@
 				>
 					Logout from Spotify
 				</button>
-				<small>Return to normal player mode</small>
 			</div>
 		</div>
 	</div>

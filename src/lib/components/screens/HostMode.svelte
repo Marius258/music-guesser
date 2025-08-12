@@ -75,12 +75,6 @@
 		color: var(--spotify-color);
 	}
 
-	.host-welcome p {
-		margin: 0 0 2rem 0;
-		font-size: 1.1rem;
-		opacity: 0.9;
-	}
-
 	.spotify-status {
 		background: rgba(30, 215, 96, 0.2);
 		border: 1px solid rgba(30, 215, 96, 0.5);
@@ -94,11 +88,6 @@
 		font-weight: bold;
 		font-size: 1.1rem;
 		margin-bottom: 0.5rem;
-	}
-
-	.spotify-status small {
-		opacity: 0.8;
-		display: block;
 	}
 
 	.host-actions {
@@ -132,31 +121,5 @@
 		background: rgba(244, 67, 54, 0.9);
 	}
 
-	.logout-section small {
-		display: block;
-		opacity: 0.7;
-		margin-top: 0.5rem;
-	}
-
-	.connecting-status {
-		color: var(--warning-color);
-		font-weight: bold;
-		padding: 0.5rem;
-		background: rgba(255, 215, 0, 0.2);
-		border-radius: var(--border-radius);
-		border: 1px solid rgba(255, 215, 0, 0.5);
-		margin-top: 0.5rem;
-		font-size: 0.9rem;
-	}
-
-	.connected-status {
-		color: var(--success-color);
-		font-weight: bold;
-		padding: 0.5rem;
-		background: rgba(var(--primary-color-rgb), 0.2);
-		border-radius: var(--border-radius);
-		border: 1px solid rgba(var(--primary-color-rgb), 0.5);
-		margin-top: 0.5rem;
-		font-size: 0.9rem;
-	}
+	
 </style>

@@ -131,10 +131,10 @@
 				<Loading text="Loading music genres..." size="small" />
 			{:else}
 				<div class="genres-grid">
-					{#each availableGenres as genre (genre.id)}
+					{#each availableGenres as genre (genre.name)}
 						<button 
-							class="genre-card {localConfig.musicCategory === genre.id ? 'selected' : ''}"
-							onclick={() => selectGenre(genre.id)}
+							class="genre-card {localConfig.musicCategory === genre.name ? 'selected' : ''}"
+							onclick={() => selectGenre(genre.name)}
 						>
 							<div class="genre-image">
 								{#if getGenreImage(genre)}
@@ -147,7 +147,7 @@
 								<h4>{genre.name}</h4>
 								<p>{genre.description}</p>
 							</div>
-							{#if localConfig.musicCategory === genre.id}
+							{#if localConfig.musicCategory === genre.name}
 								<div class="selected-badge">✓</div>
 							{/if}
 						</button>

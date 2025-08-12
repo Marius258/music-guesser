@@ -27,7 +27,7 @@
 
 	function getGenreDisplayName(genreId: string): string {
 		// Only try to find the genre from Spotify API data
-		const spotifyGenre = availableGenres.find(genre => genre.id === genreId);
+		const spotifyGenre = availableGenres.find(genre => genre.name === genreId);
 		if (spotifyGenre) {
 			return spotifyGenre.name;
 		}

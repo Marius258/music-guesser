@@ -1,11 +1,11 @@
-import { createWebSocketServer } from "$lib/server/websocket.js";
+import { createWebSocketServer, closeWebSocketServer } from "$lib/server/websocket.js";
 import type { Handle } from "@sveltejs/kit";
 
 // Initialize WebSocket server
 let wsServer: any = null;
 
 export const handle: Handle = async ({ event, resolve }) => {
-  // Initialize WebSocket server on first request
+  // Initialize WebSocket server on first request (will reuse existing if already created)
   if (!wsServer) {
     try {
       wsServer = createWebSocketServer();

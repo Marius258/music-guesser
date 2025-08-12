@@ -161,33 +161,26 @@ class SpotifyService {
     return this.accessToken;
   }
 
-  async getTracksByCategory(categoryId: string, count: number = 50): Promise<SpotifyTrack[]> {
+  async getTracksByCategory(categoryName: string, count: number = 50): Promise<SpotifyTrack[]> {
     try {
-      console.log(`Fetching tracks for category: ${categoryId}`);
-
-      let categoryName = categoryId;
-      const category = this.cachedCategories.find((cat) => cat.id === categoryId);
-      if (category) {
-        categoryName = category.name;
-        console.log(`Found category name: "${categoryName}"`);
-      }
+      console.log(`Fetching tracks for category: ${categoryName}`);
 
       // Use search with genre filter for better accuracy
-      const tracks = await this.getTracksFromGenreSearch(categoryId, categoryName, count);
+      const tracks = await this.getTracksFromGenreSearch(categoryName, count);
 
       if (tracks.length >= 4) {
         console.log(`Successfully got ${tracks.length} tracks for category "${categoryName}"`);
         return tracks;
       }
 
-      throw new Error(`Insufficient tracks found for category "${categoryId}" ("${categoryName}"). Found: ${tracks.length}, need at least 4`);
+      throw new Error(`Insufficient tracks found for category "${categoryName}". Found: ${tracks.length}, need at least 4`);
     } catch (error) {
-      console.error(`Error fetching tracks for category ${categoryId}:`, error);
-      throw new Error(`Failed to fetch tracks for category "${categoryId}"`);
+      console.error(`Error fetching tracks for category ${categoryName}:`, error);
+      throw new Error(`Failed to fetch tracks for category "${categoryName}"`);
     }
   }
 
-  private async getTracksFromGenreSearch(categoryId: string, categoryName: string, count: number): Promise<SpotifyTrack[]> {
+  private async getTracksFromGenreSearch(categoryName: string, count: number): Promise<SpotifyTrack[]> {
     try {
       console.log(`Searching for tracks in Spotify category: "${categoryName}"`);
 
@@ -217,10 +210,10 @@ class SpotifyService {
 
       console.log(`Searching with query: "${searchQuery}"`);
 
-      // Add random offset to get different results each time (max 1000 as per Spotify API limits)
-      const randomOffset = Math.floor(Math.random() * Math.min(200, 1000));
+      // Add random offset to get different results each time (max 500 as per Spotify API limits)
+      const randomOffset = Math.floor(Math.random() * Math.min(200, 500));
 
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&market=US`, {
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&market=US&offset=${randomOffset}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -262,18 +255,18 @@ class SpotifyService {
     }
   }
 
-  async getRandomTrackForRound(categoryId: string = "mixed"): Promise<{
+  async getRandomTrackForRound(categoryName: string = "mixed"): Promise<{
     correct: SpotifyTrack;
     wrongOptions: SpotifyTrack[];
   }> {
     try {
-      console.log(`Fetching tracks directly from Spotify for category "${categoryId}"`);
+      console.log(`Fetching tracks directly from Spotify for category "${categoryName}"`);
 
       // Fetch tracks directly from Spotify
-      const tracks = await this.getTracksByCategory(categoryId, 50);
+      const tracks = await this.getTracksByCategory(categoryName, 50);
 
       if (tracks.length < 4) {
-        throw new Error(`Not enough tracks found for category "${categoryId}". Only found ${tracks.length} tracks, need at least 4.`);
+        throw new Error(`Not enough tracks found for category "${categoryName}". Only found ${tracks.length} tracks, need at least 4.`);
       }
 
       // Shuffle all tracks to ensure randomness
@@ -286,7 +279,7 @@ class SpotifyService {
       // Select the correct track randomly
       const correct = availableTracks[Math.floor(Math.random() * Math.min(availableTracks.length, 50))];
       console.log(
-        `Selected correct track: "${correct.name}" by ${correct.artists[0]?.name} (popularity: ${correct.popularity}, category: ${categoryId})`
+        `Selected correct track: "${correct.name}" by ${correct.artists[0]?.name} (popularity: ${correct.popularity}, category: ${categoryName})`
       );
       console.log(`Spotify URI: ${correct.uri}`);
 
@@ -327,7 +320,7 @@ class SpotifyService {
       }
 
       if (wrongOptions.length < 3) {
-        throw new Error(`Not enough tracks to create wrong options for category "${categoryId}". Need 4 total, found ${wrongOptions.length + 1}.`);
+        throw new Error(`Not enough tracks to create wrong options for category "${categoryName}". Need 4 total, found ${wrongOptions.length + 1}.`);
       }
 
       console.log(
@@ -339,7 +332,7 @@ class SpotifyService {
         wrongOptions: wrongOptions.slice(0, 3),
       };
     } catch (error) {
-      console.error(`Error fetching Spotify tracks for category "${categoryId}":`, error);
+      console.error(`Error fetching Spotify tracks for category "${categoryName}":`, error);
       throw new Error(`Failed to fetch tracks for round from Spotify: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   }

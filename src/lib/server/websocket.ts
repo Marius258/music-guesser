@@ -575,10 +575,32 @@ class GameManager {
 
 const gameManager = new GameManager();
 
+// Store the WebSocket server instance
+let wsServerInstance: WebSocketServer | null = null;
+
 export function createWebSocketServer() {
+  // If server already exists, return the existing instance
+  if (wsServerInstance) {
+    console.log("WebSocket server already running, reusing existing instance");
+    return wsServerInstance;
+  }
+
+  console.log("Creating new WebSocket server...");
   const wss = new WebSocketServer({
     port: 8080,
     host: "0.0.0.0", // Allow connections from any IP
+  });
+
+  // Store the instance
+  wsServerInstance = wss;
+
+  // Handle server errors (like port already in use)
+  wss.on("error", (error: any) => {
+    if (error.code === "EADDRINUSE") {
+      console.error(`Port 8080 is already in use. Please close any existing instances or restart the development server.`);
+    } else {
+      console.error("WebSocket server error:", error);
+    }
   });
 
   wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
@@ -684,4 +706,16 @@ export function createWebSocketServer() {
 
   console.log("WebSocket server running on port 8080");
   return wss;
+}
+
+export function closeWebSocketServer() {
+  if (wsServerInstance) {
+    console.log("Closing WebSocket server...");
+    wsServerInstance.close();
+    wsServerInstance = null;
+  }
+}
+
+export function getWebSocketServer() {
+  return wsServerInstance;
 }

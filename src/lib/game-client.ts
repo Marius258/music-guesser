@@ -156,9 +156,12 @@ export class GameClient {
       try {
         // Use the current host but connect to WebSocket on port 8080
         const wsHost = typeof window !== "undefined" ? window.location.hostname : "localhost";
-        this.ws = new WebSocket(`ws://${wsHost}:8080`);
+        const wsUrl = `ws://${wsHost}:8080`;
+        console.log("Attempting to connect to WebSocket:", wsUrl);
+        this.ws = new WebSocket(wsUrl);
 
         this.ws.onopen = () => {
+          console.log("WebSocket connection opened successfully");
           this.connectionState = "connected";
           this.notify();
           resolve();
@@ -174,6 +177,7 @@ export class GameClient {
         };
 
         this.ws.onclose = () => {
+          console.log("WebSocket connection closed");
           this.connectionState = "disconnected";
           this.notify();
           this.clearRoundTimer();
@@ -181,8 +185,9 @@ export class GameClient {
 
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
+          console.error("Attempted to connect to:", `ws://${wsHost}:8080`);
           this.connectionState = "disconnected";
-          this.error = "Connection failed";
+          this.error = `Connection failed to ws://${wsHost}:8080`;
           this.notify();
           reject(new Error("WebSocket connection failed"));
         };

@@ -1,216 +1,71 @@
 <script lang="ts">
-	interface Props {
-		question: any; // Type from GameState.currentQuestion
-		isHost: boolean;
-		selectedAnswer: string | null;
-		hasAnswered: boolean;
-		hostOnlyMode: boolean;
-		onSelectAnswer: (answer: string) => void;
-	}
+  interface Props {
+    question: any;
+    isHost: boolean;
+    selectedAnswer: string | null;
+    hasAnswered: boolean;
+    hostOnlyMode: boolean;
+    onSelectAnswer: (answer: string) => void;
+  }
 
-	let { 
-		question,
-		isHost,
-		selectedAnswer, 
-		hasAnswered, 
-		hostOnlyMode,
-		onSelectAnswer, 
-	}: Props = $props();
+  let { question, isHost, selectedAnswer, hasAnswered, hostOnlyMode, onSelectAnswer }: Props = $props();
 </script>
 
-<div class="question-section">
-	<div class="question-type">
-		<h3>
-			{#if question.type === 'artist'}
-				Who is the artist?
-			{:else}
-				What is the song name?
-			{/if}
-		</h3>
-	</div>
+<div class="min-h-96">
+  <div class="mb-6">
+    <h3 class="text-xl text-center m-0">
+      {#if question.type === "artist"}
+        Who is the artist?
+      {:else}
+        What is the song name?
+      {/if}
+    </h3>
+  </div>
 
-	<div class="audio-player">
-		<div class="audio-controls">
-			
-		</div>
-	</div>
+  <div class="mb-6">
+    <div></div>
+  </div>
 
-	{#if hostOnlyMode && isHost}
-		<!-- Host-only mode: Host cannot participate in answering -->
-		<div class="host-only-mode">
-			<div class="host-info">
-				<div class="answer-preview">
-					{#each question.options as option, index (option)}
-						<div class="option-preview">
-							<span class="option-letter">{String.fromCharCode(65 + index)}</span>
-							<span class="option-text">{option}</span>
-						</div>
-					{/each}
-				</div>
-			</div>
-		</div>
-	{:else}
-		<div class="answers">
-			<h4>Choose your answer:</h4>
-			<div class="answer-grid">
-				{#each question.options as option, index (option)}
-					<button 
-						class="answer-btn {selectedAnswer === option ? 'selected' : ''}"
-						onclick={() => onSelectAnswer(option)}
-						disabled={hasAnswered}
-					>
-						<span class="option-letter">{String.fromCharCode(65 + index)}</span>
-						<span class="option-text">{option}</span>
-					</button>
-				{/each}
-			</div>
-		</div>
-	{/if}
+  {#if hostOnlyMode && isHost}
+    <!-- Host-only mode: Host cannot participate in answering -->
+    <div class="p-8 text-center">
+      <div class="border-2 p-8 max-w-2xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {#each question.options as option, index (option)}
+            <div class="flex items-center gap-3 p-4 border">
+              <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+                >{String.fromCharCode(65 + index)}</span
+              >
+              <span class="text-sm text-left">{option}</span>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+  {:else}
+    <div>
+      <h4 class="text-lg text-center mb-4 m-0">Choose your answer:</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {#each question.options as option, index (option)}
+          <button
+            class="border-2 p-4 cursor-pointer transition-all flex items-center gap-3 text-left min-h-15 {selectedAnswer === option
+              ? 'selected'
+              : ''} disabled:opacity-60 disabled:cursor-not-allowed"
+            onclick={() => onSelectAnswer(option)}
+            disabled={hasAnswered}
+          >
+            <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">{String.fromCharCode(65 + index)}</span>
+            <span class="flex-1 text-sm">{option}</span>
+          </button>
+        {/each}
+      </div>
+    </div>
+  {/if}
 
-	{#if hasAnswered}
-		<div class="answer-submitted">
-			Answer submitted! Waiting for round to end...
-		</div>
-	{/if}
+  {#if hasAnswered}
+    <div class="text-center mt-6 p-4 border font-medium">Answer submitted! Waiting for round to end...</div>
+  {/if}
 </div>
 
 <style>
-	.question-section {
-		min-height: 400px;
-	}
-
-	.question-type h3 {
-		margin: 0 0 1.5rem 0;
-		font-size: 1.3rem;
-		text-align: center;
-	}
-
-	.answers h4 {
-		margin: 0 0 1rem 0;
-		text-align: center;
-		font-size: 1.1rem;
-	}
-
-	.answer-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
-	}
-
-	.answer-btn {
-		background: var(--secondary-color);
-		border: 2px solid var(--border-color);
-		color: var(--text-primary);
-		padding: 1rem;
-		border-radius: var(--border-radius);
-		cursor: pointer;
-		transition: var(--transition);
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		text-align: left;
-		min-height: 60px;
-	}
-
-	.answer-btn:hover:not(:disabled) {
-		background: var(--secondary-hover);
-		border-color: rgba(255, 255, 255, 0.4);
-		transform: translateY(-2px);
-	}
-
-	.answer-btn.selected {
-		background: rgba(var(--primary-color-rgb), 0.3);
-		border-color: rgba(var(--primary-color-rgb), 0.8);
-	}
-
-	.answer-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.option-letter {
-		background: rgba(255, 255, 255, 0.2);
-		width: 30px;
-		height: 30px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: bold;
-		flex-shrink: 0;
-	}
-
-	.option-text {
-		flex: 1;
-		font-size: 0.95rem;
-	}
-
-	.answer-submitted {
-		text-align: center;
-		margin-top: 1.5rem;
-		padding: 1rem;
-		background: rgba(var(--primary-color-rgb), 0.2);
-		border-radius: var(--border-radius);
-		border: 1px solid rgba(var(--primary-color-rgb), 0.5);
-		color: var(--success-color);
-		font-weight: 500;
-	}
-
-	@media (max-width: 768px) {
-		.answer-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	/* Host-only mode styles */
-	.host-only-mode {
-		padding: 2rem;
-		text-align: center;
-	}
-
-	.host-info {
-		background: rgba(30, 215, 96, 0.1);
-		border: 2px solid rgba(30, 215, 96, 0.3);
-		border-radius: 12px;
-		padding: 2rem;
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	.answer-preview {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 1rem;
-		margin-top: 1.5rem;
-	}
-
-	.option-preview {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 1rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid var(--border-color);
-		border-radius: 8px;
-		color: var(--text-primary);
-	}
-
-	.option-preview .option-letter {
-		background: var(--secondary-color);
-		color: var(--text-primary);
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: bold;
-		font-size: 0.9rem;
-		flex-shrink: 0;
-	}
-
-	.option-preview .option-text {
-		font-size: 0.9rem;
-		text-align: left;
-	}
 </style>

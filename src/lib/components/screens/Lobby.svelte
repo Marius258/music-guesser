@@ -1,264 +1,133 @@
 <script lang="ts">
-	import type { GameState, GameConfig } from '$lib/game-client.js';
-		import { GameConfigForm } from '../forms/index.js';
-	import { Loading } from '../common/index.js';
+  import type { GameState, GameConfig } from "$lib/game-client.js";
+  import { GameConfigForm } from "../forms/index.js";
+  import { Loading } from "../common/index.js";
 
-	interface SpotifyGenre {
-		id: string;
-		name: string;
-		icons?: { url: string; height: number; width: number }[];
-		isMainGenre?: boolean;
-		subgenres?: string[];
-	}
+  interface SpotifyGenre {
+    id: string;
+    name: string;
+    icons?: { url: string; height: number; width: number }[];
+    isMainGenre?: boolean;
+    subgenres?: string[];
+  }
 
-	interface Props {
-		gameState: GameState;
-		onstartgame: () => void;
-		onupdateconfig?: (config: GameConfig) => void;
-	}
+  interface Props {
+    gameState: GameState;
+    onstartgame: () => void;
+    onupdateconfig?: (config: GameConfig) => void;
+  }
 
-	let { gameState, onstartgame, onupdateconfig }: Props = $props();
-	let availableGenres = $state<SpotifyGenre[]>([]);
+  let { gameState, onstartgame, onupdateconfig }: Props = $props();
+  let availableGenres = $state<SpotifyGenre[]>([]);
 
-	function getGenreDisplayName(genreId: string): string {
-		// Only try to find the genre from Spotify API data
-		const spotifyGenre = availableGenres.find(genre => genre.name === genreId);
-		if (spotifyGenre) {
-			return spotifyGenre.name;
-		}
+  function getGenreDisplayName(genreId: string): string {
+    const spotifyGenre = availableGenres.find((genre) => genre.name === genreId);
+    if (spotifyGenre) {
+      return spotifyGenre.name;
+    }
 
-		// If not found, just return the ID (no fallback mappings)
-		return genreId;
-	}
+    return genreId;
+  }
 </script>
 
-<div class="card">
-	<div class="lobby">
-		<h2>Game Lobby</h2>
-		
-		<div class="game-info">
-			<div class="game-id">
-				<h3>Game ID:</h3>
-				<div class="id-container">
-					<code class="game-id-code">{gameState.id}</code>
-				</div>
-			</div>
-		</div>
+<div class="card w-full max-w-md preset-filled-surface-100-900 p-4 text-center space-y-4">
+  <!-- Header Section -->
+  <div class="text-center space-y-4">
+    <h2 class="h3">Game Lobby</h2>
 
-		<div class="players-section">
-			<h3>Players ({gameState.players.length})</h3>
-			<div class="players-list">
-				{#each gameState.players as player (player.id)}
-					<div class="player">
-						<span class="player-name">
-							{player.name}
-							{#if player.id === gameState.playerId}
-								<span class="you-label">(You)</span>
-							{/if}
-							{#if gameState.isHost && player.id === gameState.playerId}
-								<span class="host-label">Host</span>
-							{/if}
-						</span>
-					</div>
-				{/each}
-				
-				{#if gameState.players.length === 0}
-					<div class="no-players">
-						Waiting for players to join...
-					</div>
-				{/if}
-			</div>
-		</div>
+    <div class="flex justify-center items-center gap-3">
+      <span class="text-sm font-medium">Game ID:</span>
+      <div class="chip variant-filled-primary">
+        <span class="font-mono text-sm">{gameState.id}</span>
+      </div>
+    </div>
+  </div>
 
-		{#if gameState.isHost}
-			<div class="host-controls">
-				{#if gameState.config && onupdateconfig}
-					<GameConfigForm 
-						config={gameState.config}
-						onupdateconfig={onupdateconfig}
-					/>
-				{/if}
+  <!-- Players Section -->
+  <div class="card variant-ghost-surface p-4 space-y-3">
+    <h3 class="h4 text-center">Players ({gameState.players.length})</h3>
 
-				{#if gameState.config}
-					<div class="current-settings">
-						<h3>Current Game Settings</h3>
-						<div class="config-items">
-							<div class="config-item">
-								<span class="config-label">Rounds:</span>
-								<span class="config-value">{gameState.config.totalRounds}</span>
-							</div>
-							<div class="config-item">
-								<span class="config-label">Round Duration:</span>
-								<span class="config-value">{gameState.config.roundDurationSeconds}s</span>
-							</div>						<div class="config-item">
-							<span class="config-label">Random Start:</span>
-							<span class="config-value">{gameState.config.randomStartTime ? 'Yes' : 'No'}</span>
-						</div>
-						<div class="config-item">
-							<span class="config-label">Host Mode:</span>
-							<span class="config-value">{gameState.config.hostOnlyMode ? 'Host Only' : 'Participates'}</span>
-						</div>
-						<div class="config-item">
-							<span class="config-label">Music Genre:</span>
-							<span class="config-value">{getGenreDisplayName(gameState.config.musicCategory)}</span>
-						</div>
-						</div>
-					</div>
-				{/if}
+    <div class="space-y-2 max-h-48 overflow-y-auto">
+      {#each gameState.players as player (player.id)}
+        <div class="card variant-soft-surface flex justify-between items-center p-3">
+          <span class="font-medium">{player.name}</span>
+          <div class="flex gap-2">
+            {#if player.id === gameState.playerId}
+              <span class="badge variant-filled-primary text-xs">You</span>
+            {/if}
+            {#if gameState.isHost && player.id === gameState.playerId}
+              <span class="badge variant-filled-secondary text-xs">Host</span>
+            {/if}
+          </div>
+        </div>
+      {/each}
 
-				<button 
-					class="btn btn-primary start-btn"
-					onclick={onstartgame}
-					disabled={gameState.players.length < 1}
-				>
-					{gameState.players.length < 1 ? 'Waiting for players...' : 'Start Game!'}
-				</button>
-				<p class="min-players">Minimum 1 player required to start</p>
-			</div>
-		{:else}
-			<Loading type="dots" text="Waiting for host to start the game..." />
-		{/if}
-	</div>
+      {#if gameState.players.length === 0}
+        <div class="text-center py-4 opacity-75 text-sm">Waiting for players to join...</div>
+      {/if}
+    </div>
+  </div>
+
+  <!-- Host Controls Section -->
+  {#if gameState.isHost}
+    <div class="space-y-4">
+      <!-- Game Configuration -->
+      {#if gameState.config && onupdateconfig}
+        <GameConfigForm config={gameState.config} {onupdateconfig} />
+      {/if}
+
+      <!-- Current Settings Display -->
+      {#if gameState.config}
+        <div class="card variant-ghost-surface p-4">
+          <h3 class="h4 mb-3 text-center">Current Settings</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="card variant-soft-surface p-3 flex justify-between items-center">
+              <span class="text-sm opacity-75">Rounds:</span>
+              <span class="badge variant-filled-primary text-xs">{gameState.config.totalRounds}</span>
+            </div>
+
+            <div class="card variant-soft-surface p-3 flex justify-between items-center">
+              <span class="text-sm opacity-75">Duration:</span>
+              <span class="badge variant-filled-primary text-xs">{gameState.config.roundDurationSeconds}s</span>
+            </div>
+
+            <div class="card variant-soft-surface p-3 flex justify-between items-center">
+              <span class="text-sm opacity-75">Random Start:</span>
+              <span class="badge variant-filled-primary text-xs">{gameState.config.randomStartTime ? "Yes" : "No"}</span>
+            </div>
+
+            <div class="card variant-soft-surface p-3 flex justify-between items-center">
+              <span class="text-sm opacity-75">Host Mode:</span>
+              <span class="badge variant-filled-primary text-xs">{gameState.config.hostOnlyMode ? "Yes" : "No"}</span>
+            </div>
+
+            <div class="card variant-soft-surface p-3 flex justify-between items-center md:col-span-2">
+              <span class="text-sm opacity-75">Genre:</span>
+              <span class="badge variant-filled-primary text-xs">{getGenreDisplayName(gameState.config.musicCategory)}</span>
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Start Game Button -->
+      <div class="text-center space-y-2">
+        <button type="button" onclick={onstartgame} disabled={gameState.players.length < 1} class="btn preset-gradient">
+          <span>{gameState.players.length < 1 ? "Waiting for players..." : "Start Game"}</span>
+        </button>
+
+        <p class="text-xs opacity-75">Minimum 1 player required to start</p>
+      </div>
+    </div>
+  {:else}
+    <!-- Non-Host View -->
+    <div class="text-center py-8">
+      <div class="card variant-ghost-surface p-6">
+        <Loading type="dots" text="Waiting for host to start the game..." />
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
-	.lobby {
-		text-align: center;
-		max-width: 600px;
-	}
-
-	h2 {
-		margin-bottom: 2rem;
-		font-size: 1.8rem;
-	}
-
-	h3 {
-		margin: 1.5rem 0 1rem 0;
-		font-size: 1.2rem;
-		color: rgba(255, 255, 255, 0.9);
-	}
-
-	.game-info {
-		margin-bottom: 2rem;
-	}
-
-	.game-id,
-	.players-list,
-	.current-settings {
-		background: var(--card-bg-secondary);
-		border-radius: var(--border-radius);
-		padding: 1rem;
-		margin-bottom: 1rem;
-		border: var(--border-subtle);
-	}
-
-	.id-container {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		justify-content: center;
-		margin: 0.5rem 0;
-	}
-
-	.game-id-code {
-		background: rgba(0, 0, 0, 0.3);
-		padding: 0.5rem 1rem;
-		border-radius: 0.25rem;
-		font-family: monospace;
-		font-size: 1.1rem;
-		letter-spacing: 1px;
-		border: 1px solid var(--border-color);
-	}
-
-	.players-section {
-		margin-bottom: 2rem;
-	}
-
-	.players-list {
-		min-height: 100px;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.player {
-		background: var(--secondary-color);
-		padding: 0.75rem;
-		border-radius: 0.25rem;
-		border: var(--border-subtle);
-	}
-
-	.player-name {
-		font-weight: 500;
-	}
-
-	.you-label {
-		color: var(--success-color);
-		font-size: 0.8rem;
-		margin-left: 0.5rem;
-	}
-
-	.host-label {
-		color: var(--accent-color);
-		font-size: 0.8rem;
-		margin-left: 0.5rem;
-	}
-
-	.no-players {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: var(--text-secondary);
-		font-style: italic;
-	}
-
-	.host-controls {
-		margin-top: 2rem;
-	}
-
-	.current-settings h3 {
-		margin: 0 0 0.75rem 0;
-		font-size: 1rem;
-		color: var(--text-primary);
-	}
-
-	.config-items {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.config-item {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		font-size: 0.9rem;
-	}
-
-	.config-label {
-		color: var(--text-secondary);
-		font-weight: 500;
-	}
-
-	.config-value {
-		color: var(--text-primary);
-		font-weight: 600;
-	}
-
-	.start-btn {
-		font-size: 1.1rem;
-		padding: 1rem 2rem;
-		margin-bottom: 0.5rem;
-		width: 100%;
-		max-width: 300px;
-	}
-
-	.min-players {
-		font-size: 0.8rem;
-		opacity: 0.7;
-		margin: 0;
-	}
-
-
 </style>

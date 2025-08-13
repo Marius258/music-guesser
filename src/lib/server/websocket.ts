@@ -597,18 +597,22 @@ export function createWebSocketServer() {
   // Handle server errors (like port already in use)
   wss.on("error", (error: any) => {
     if (error.code === "EADDRINUSE") {
-      console.error(`Port 8080 is already in use. Please close any existing instances or restart the development server.`);
+      console.error(`Port 8080 is already in use. This might be due to hot reloading - the connection should still work.`);
+      // Don't reset wsServerInstance here, keep the working one
     } else {
       console.error("WebSocket server error:", error);
+      wsServerInstance = null; // Reset on other errors
     }
   });
 
   wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
+    console.log(`New WebSocket connection from ${req.socket.remoteAddress}:${req.socket.remotePort}`);
     let playerId: string;
 
     ws.on("message", (data: Buffer) => {
       try {
         const message: Message = JSON.parse(data.toString());
+        console.log(`Received message from ${req.socket.remoteAddress}: ${message.type}`, message.data || "");
 
         switch (message.type) {
           case "join":
@@ -630,6 +634,7 @@ export function createWebSocketServer() {
                   data: { gameId, playerId, isHost: true },
                 })
               );
+              console.log(`Host ${message.data.name} created game ${gameId}`);
             } else {
               // Join existing game
               playerId = generatePlayerId();
@@ -647,6 +652,7 @@ export function createWebSocketServer() {
                     data: { gameId: message.data.gameId, playerId, isHost: false },
                   })
                 );
+                console.log(`Player ${message.data.name} joined game ${message.data.gameId}`);
               } else {
                 ws.send(
                   JSON.stringify({
@@ -694,13 +700,14 @@ export function createWebSocketServer() {
     });
 
     ws.on("close", () => {
+      console.log(`WebSocket connection closed for player ${playerId || "unknown"}`);
       if (playerId) {
         gameManager.removePlayer(playerId);
       }
     });
 
     ws.on("error", (error) => {
-      console.error("WebSocket error:", error);
+      console.error("WebSocket error for player", playerId || "unknown", ":", error);
     });
   });
 

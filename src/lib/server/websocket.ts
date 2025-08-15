@@ -56,6 +56,7 @@ export interface Message {
     | "next_round"
     | "update_config"
     | "play_again"
+    | "music_ready_confirm"
     | "config_updated"
     | "player_joined"
     | "player_left"
@@ -66,6 +67,7 @@ export interface Message {
     | "answer_result"
     | "game_finished"
     | "game_reset"
+    | "music_ready"
     | "error";
   data?: any;
   playerId?: string;
@@ -228,13 +230,12 @@ class GameManager {
           config: {
             randomStartTime: game.config.randomStartTime,
           },
+          waitForMusic: true, // Signal that we're waiting for music confirmation
         },
       });
 
-      // Auto-advance after round duration
-      game.roundTimer = setTimeout(() => {
-        this.endRound(gameId);
-      }, game.roundDuration);
+      // Don't start timer immediately - wait for music ready confirmation from host
+      console.log(`Round ${game.currentRound} prepared, waiting for music confirmation...`);
     } catch (error) {
       console.error("Error fetching Spotify data for round:", error);
 
@@ -247,6 +248,39 @@ class GameManager {
       // End the game since we can't continue without Spotify data
       this.finishGame(gameId);
     }
+  }
+
+  musicReady(gameId: string, hostId: string): boolean {
+    const game = this.games.get(gameId);
+    if (!game || game.hostId !== hostId || !game.currentSong) {
+      return false;
+    }
+
+    // Only start timer if we haven't already started it
+    if (game.roundTimer) {
+      console.log(`Timer already running for game ${gameId}`);
+      return false;
+    }
+
+    // Update round start time to when music actually starts
+    game.roundStartTime = Date.now();
+
+    // Notify all players that the music is ready and timer is starting
+    this.broadcastToGame(gameId, {
+      type: "music_ready",
+      data: {
+        message: "Music is ready, timer starting now!",
+        actualStartTime: game.roundStartTime,
+      },
+    });
+
+    // Now start the actual round timer
+    game.roundTimer = setTimeout(() => {
+      this.endRound(gameId);
+    }, game.roundDuration);
+
+    console.log(`Music ready confirmed for game ${gameId}, round ${game.currentRound} timer started`);
+    return true;
   }
 
   submitAnswer(gameId: string, playerId: string, answer: string, answerTime?: number): void {
@@ -685,6 +719,12 @@ export function createWebSocketServer() {
           case "play_again":
             if (playerId && message.gameId) {
               gameManager.resetGame(message.gameId, playerId);
+            }
+            break;
+
+          case "music_ready_confirm":
+            if (playerId && message.gameId) {
+              gameManager.musicReady(message.gameId, playerId);
             }
             break;
         }

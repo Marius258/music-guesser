@@ -65,6 +65,7 @@ export interface WebSocketMessage {
     | "answer"
     | "update_config"
     | "play_again"
+    | "music_ready_confirm"
     | "joined"
     | "player_joined"
     | "player_left"
@@ -76,6 +77,7 @@ export interface WebSocketMessage {
     | "game_finished"
     | "game_reset"
     | "config_updated"
+    | "music_ready"
     | "error";
   data?: any;
   gameId?: string;
@@ -284,6 +286,13 @@ export class GameClient {
     });
   }
 
+  sendMusicReadyConfirmation() {
+    this.sendMessage({
+      type: "music_ready_confirm",
+      gameId: this.gameState.id,
+    });
+  }
+
   private sendMessage(message: WebSocketMessage) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
@@ -323,8 +332,21 @@ export class GameClient {
         this.gameState.currentRound = message.data.round;
         this.gameState.currentQuestion = message.data.question;
         this.gameState.showingRoundResults = false; // Hide round results when starting new round
-        this.roundStartTime = Date.now(); // Track when round started
-        this.startRoundTimer(message.data.duration);
+
+        // Only start round timer if not waiting for music
+        if (!message.data.waitForMusic) {
+          this.roundStartTime = Date.now(); // Track when round started
+          this.startRoundTimer(message.data.duration);
+        }
+
+        this.notify();
+        break;
+
+      case "music_ready":
+        // Update round start time when music is actually ready
+        this.roundStartTime = Date.now();
+        this.startRoundTimer(this.gameState.config?.roundDurationSeconds ? this.gameState.config.roundDurationSeconds * 1000 : 30000);
+        console.log("Music ready received, starting timer now");
         this.notify();
         break;
 

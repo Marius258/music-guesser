@@ -148,6 +148,11 @@
     gameClient.submitAnswer(answer);
   }
 
+  function handleMusicReady() {
+    // Notify server that music is ready and timer can start
+    gameClient.sendMusicReadyConfirmation();
+  }
+
   function handlePlayAgain() {
     // Only the host can play again, and it will reset the game to lobby for all players
     gameClient.playAgain();
@@ -194,7 +199,7 @@
     {:else if currentScreen() === "lobby"}
       <Lobby {gameState} onstartgame={handleStartGame} onupdateconfig={handleUpdateGameConfig} />
     {:else if currentScreen() === "game"}
-      {@const gamePlayProps = { gameState, onsubmitanswer: handleSubmitAnswer }}
+      {@const gamePlayProps = { gameState, onsubmitanswer: handleSubmitAnswer, onmusicready: handleMusicReady }}
       <GamePlay {...gamePlayProps} />
     {:else if currentScreen() === "results"}
       <GameResults {gameState} onplayagain={handlePlayAgain} />

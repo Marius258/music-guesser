@@ -12,9 +12,10 @@
   interface Props {
     gameState: GameState;
     onsubmitanswer: (answer: string) => void;
+    onmusicready?: () => void;
   }
 
-  let { gameState, onsubmitanswer }: Props = $props();
+  let { gameState, onsubmitanswer, onmusicready }: Props = $props();
 
   let selectedAnswer = $state<string | null>(null);
   let hasAnswered = $state(false);
@@ -117,6 +118,12 @@
       }
 
       spotifyPlaying = true;
+
+      // Notify server that music is ready and timer can start
+      if (onmusicready) {
+        console.log("Music ready, notifying server to start timer");
+        onmusicready();
+      }
     } catch (error) {
       console.error("Failed to play Spotify track:", error);
       playbackError = `Failed to play track: ${error instanceof Error ? error.message : "Unknown error"}`;
